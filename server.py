@@ -3,17 +3,9 @@ from _thread import start_new_thread
 import pickle
 from time import time, sleep
 from game import Game
-import os
-ON_HEROKU = os.environ.get('ON_HEROKU')
 
-
-if ON_HEROKU:
-    # get the heroku port
-    server = "https://syndicatezero.herokuapp.com/"
-    port = int(os.environ.get('PORT', 17995))
-else:
-    server = "0,0,0,0"
-    port = 17995
+server = "https://34.74.168.104/"
+port = 7788
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
