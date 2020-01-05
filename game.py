@@ -12,23 +12,28 @@ class Game:
         # Player objects in game
         self.players = [Hero("1"), Hero("2")]
 
+    def ready(self):
+        pass
+
     def do_game_tick(self, t):
         self.time = t
         for p_id in range(len(self.players)):
             if self.players[p_id] is not None:
                 if self.players[p_id].ACTION == "MOVE":
-                    spd = self.players[p_id].stats.MOVEMENT_SPEED / 50
+                    spd = self.players[p_id].stats.MOVEMENT_SPEED / 25
                     loc = self.players[p_id].A_DATA
-                    if self.players[p_id].stats.X_COORD < loc[0]:
+                    x = self.players[p_id].stats.X_COORD
+                    y = self.players[p_id].stats.Y_COORD
+                    if x < loc[0]:
                         self.players[p_id].stats.X_COORD += spd
-                    if self.players[p_id].stats.Y_COORD < loc[1]:
+                    if y < loc[1]:
                         self.players[p_id].stats.Y_COORD += spd
-                    if self.players[p_id].stats.X_COORD > loc[0]:
+                    if x > loc[0]:
                         self.players[p_id].stats.X_COORD -= spd
-                    if self.players[p_id].stats.Y_COORD > loc[1]:
+                    if y > loc[1]:
                         self.players[p_id].stats.Y_COORD -= spd
-            else:
-                print("No player")
+                    if x == loc[0] and y == loc[1]:
+                        self.players[p_id].ACTION = None
 
     # Function used to get the player positions
     def get_player_details(self, p_id, uname="NULL"):

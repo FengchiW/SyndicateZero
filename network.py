@@ -5,9 +5,17 @@ import pickle
 class Network:
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server = "34.74.168.104"
-        self.port = 7788
-        self.addr = (self.server, self.port)
+        self.port = 5555
+        self.addr = (None, None)
+        self.p = None
+
+    def set_server_address(self, addr):
+        if addr is None:
+            self.addr = ("172.105.5.44", self.port)
+        else:
+            self.addr = (addr, self.port)
+
+    def try_connection(self):
         self.p = self.connect()
 
     def getP(self):
@@ -16,9 +24,11 @@ class Network:
     def connect(self):
         try:
             self.client.connect(self.addr)
+            print("Connected to", self.addr)
             return self.client.recv(2048).decode()
         except ConnectionRefusedError:
-            print("Connection Refused!")
+            print("Main Server is down Refused!")
+            quit()
 
     def send(self, data):
         try:

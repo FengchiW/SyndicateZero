@@ -4,8 +4,8 @@ import pickle
 from time import time, sleep
 from game import Game
 
-server = "https://34.74.168.104/"
-port = 7788
+server = ''
+port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -23,18 +23,20 @@ idCount = 0
 
 
 def game_tread(gameId, t):
-    sleep(0.002)
-    if gameId in games:
-        game = games[gameId]
-        game.do_game_tick(time()-t)
+    while True:
+        sleep(120/1000)
+        if gameId in games:
+            game = games[gameId]
+            game.do_game_tick(time()-t)
 
 
 def threaded_client(conn, p, gameId):
     global idCount
     conn.send(str.encode(str(p)))
 
+    start_new_thread(game_tread, (gameId, time()))
+
     while True:
-        start_new_thread(game_tread, (gameId, time()))
         try:
             data = conn.recv(4096).decode()
 
@@ -46,7 +48,7 @@ def threaded_client(conn, p, gameId):
                 else:
                     if data == "reset":
                         game.resetWent()
-                    elif data != "get":
+                    elif data != "ready":
                         game.command(p, data)
 
                     conn.sendall(pickle.dumps(game))
