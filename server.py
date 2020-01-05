@@ -24,7 +24,7 @@ idCount = 0
 
 def game_tread(gameId, t):
     while True:
-        sleep(120/1000)
+        sleep(1/120)
         if gameId in games:
             game = games[gameId]
             game.do_game_tick(time()-t)
@@ -70,7 +70,7 @@ def threaded_client(conn, p, gameId):
 try:
     while True:
         conn, addr = s.accept()
-        print("Connected to:", addr)
+        print("Listening at:", addr)
 
         idCount += 1
         p = 0
@@ -78,11 +78,12 @@ try:
         if idCount % 2 == 1:
             games[gameId] = Game(gameId)
             print("Creating a new game...")
+            start_new_thread(threaded_client, (conn, p, gameId))
         else:
             games[gameId].ready = True
             p = 1
+            start_new_thread(threaded_client, (conn, p, gameId))
 
-        start_new_thread(threaded_client, (conn, p, gameId))
 except KeyboardInterrupt:
     s.close()
     print("Shutdown Server")

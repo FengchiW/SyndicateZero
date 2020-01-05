@@ -1,4 +1,4 @@
-from hero import Hero
+from entities import Enitity
 
 
 class Game:
@@ -10,7 +10,8 @@ class Game:
         self.id = id
         self.time = None
         # Player objects in game
-        self.players = [Hero("1"), Hero("2")]
+        self.players = [Enitity("1"), Enitity("2")]
+        self.projectiles = []
 
     def ready(self):
         pass
@@ -20,20 +21,7 @@ class Game:
         for p_id in range(len(self.players)):
             if self.players[p_id] is not None:
                 if self.players[p_id].ACTION == "MOVE":
-                    spd = self.players[p_id].stats.MOVEMENT_SPEED / 25
-                    loc = self.players[p_id].A_DATA
-                    x = self.players[p_id].stats.X_COORD
-                    y = self.players[p_id].stats.Y_COORD
-                    if x < loc[0]:
-                        self.players[p_id].stats.X_COORD += spd
-                    if y < loc[1]:
-                        self.players[p_id].stats.Y_COORD += spd
-                    if x > loc[0]:
-                        self.players[p_id].stats.X_COORD -= spd
-                    if y > loc[1]:
-                        self.players[p_id].stats.Y_COORD -= spd
-                    if x == loc[0] and y == loc[1]:
-                        self.players[p_id].ACTION = None
+                    self.players[p_id].move_to_pos()
 
     # Function used to get the player positions
     def get_player_details(self, p_id, uname="NULL"):
