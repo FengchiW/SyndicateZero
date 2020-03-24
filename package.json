@@ -1,0 +1,27 @@
+{
+    "name": "syndicatezero",
+    "version": "1.0.0",
+    "description": "Multiplayer Game",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron ."
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/FengchiW/SyndicateZero.git"
+    },
+    "keywords": [
+        "Game",
+        "Electron",
+        "Node"
+    ],
+    "author": "Wilson Wang",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/FengchiW/SyndicateZero/issues"
+    },
+    "homepage": "https://github.com/FengchiW/SyndicateZero#readme",
+    "dependencies": {
+        "electron": "^8.2.0"
+    }
+}
