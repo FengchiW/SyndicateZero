@@ -13,9 +13,6 @@ class Game:
         self.players = [Enitity("1"), Enitity("2")]
         self.projectiles = []
 
-    def ready(self):
-        pass
-
     def do_game_tick(self, t):
         self.time = t
         for p_id in range(len(self.players)):
@@ -36,11 +33,7 @@ class Game:
         print(cmd)
         if cmd[0] == "1":
             self.players[pid].ACTION = "MOVE"
-            self.players[pid].A_DATA = (int(cmd[2]), int(cmd[3]))
-            print(self.players[pid].ACTION, self.players[pid].A_DATA)
-        # if attack command
-        if cmd[1] == "1":
-            self.players[pid].ACTION = "ATTACK"
+            self.players[pid].A_DATA = (int(cmd[2]))
 
     # ready
     def connected(self):

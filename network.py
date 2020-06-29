@@ -11,12 +11,9 @@ class Network:
 
     def set_server_address(self, addr):
         if addr is None:
-            self.addr = ("172.105.5.44", self.port)
+            self.addr = ("127.0.0.1", self.port)
         else:
             self.addr = (addr, self.port)
-
-    def try_connection(self):
-        self.p = self.connect()
 
     def getP(self):
         return self.p
@@ -28,7 +25,10 @@ class Network:
             return self.client.recv(2048).decode()
         except ConnectionRefusedError:
             print("Main Server is down Refused!")
-            quit()
+            return False
+        except socket.gaierror:
+            print("Server Doesn't exist")
+            return False
 
     def send(self, data):
         try:
