@@ -1,6 +1,6 @@
 import pygame
-from network import Network
-from _thread import start_new_thread
+from util.network import Network
+import game
 # from util.display import Display
 
 
@@ -188,12 +188,27 @@ class GameScene(SceneBase):
     def __init__(self, n):
         SceneBase.__init__(self)
         self.Network = n
+        self.shooting = False
 
     def ProcessInput(self, events, pressed_keys):
         for event in events:
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
-                self.Network.send("1,0,"+str(pos[0])+","+str(pos[1]))
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  
+                self.shooting = True
+            elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                self.shooting = False
+        if self.shooting:
+            pos = pygame.mouse.get_pos()
+            self.Network.send("2,"+str(pos[0])+","+str(pos[1]))
+        w, d, a, s = "0", "0", "0", "0"
+        if pressed_keys[pygame.K_w]:
+            w = "1"
+        if pressed_keys[pygame.K_s]:
+            s = "1"
+        if pressed_keys[pygame.K_a]:
+            a = "1"
+        if pressed_keys[pygame.K_d]:
+            d = "1"
+        self.Network.send("1,"+w+","+s+","+a+","+d)
 
     def Update(self):
         try:
@@ -209,8 +224,13 @@ class GameScene(SceneBase):
         hero1 = self.game.get_player_details(0)
         hero2 = self.game.get_player_details(1)
 
-        loc_h1 = (int(hero1.stats.X_COORD), int(hero1.stats.Y_COORD))
-        loc_h2 = (int(hero2.stats.X_COORD), int(hero2.stats.Y_COORD))
+        projectiles = self.game.get_projectiles()
+
+        for bullet in projectiles:
+            pygame.draw.circle(screen, (255, 0, 0), (int(bullet.x), int(bullet.y)), 5)
+
+        loc_h1 = (int(hero1.x), int(hero1.y))
+        loc_h2 = (int(hero2.x), int(hero2.y))
 
         text = font.render("P", 1, (255, 0, 0), True)
         screen.blit(text, loc_h1)

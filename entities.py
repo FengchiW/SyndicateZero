@@ -1,11 +1,31 @@
 from stats import Status
-import consts
+from math import sqrt
+
+class Bullet:
+    def __init__(self, x, y, fx, fy, id="0"):
+        self.id = id
+        self.velocity = 2
+        self.range = 300
+        self.origin = (x, y)
+        self.x = x
+        self.y = y
+        magnitude = sqrt((int(fx - x) ** 2 + int(fy - y) ** 2))
+        self.dir = ((fx - x) / magnitude, (fy - y)/magnitude)
+
+    def update(self):
+        self.x += self.velocity * self.dir[0]
+        self.y += self.velocity * self.dir[1]
+
 
 class Enitity:
     def __init__(self, name="NULL", icon="None"):
+        self.x = 0
+        self.y = 0
+        self.velocityX = 0
+        self.velocityY = 0
         self.name = name
         self.icon = icon
-        self.stats = Status(0, 0, 0, 50, 0, 0)
+        self.stats = Status(0, 0, 0, 50, 50, 0)
         self.ACTION = None
         self.A_DATA = None
         self.ready = False
@@ -13,16 +33,23 @@ class Enitity:
     def set_Stats(self, stat_Name, value):
         pass
 
+    def update(self):
+        self.y += self.velocityY
+        self.x += self.velocityX
+        self.velocityX *= 0.8
+        self.velocityY *= 0.8
+
     def move_to_pos(self):
         spd = self.stats.MOVEMENT_SPEED / 25
         loc = self.A_DATA
-        if loc is UP:
-            self.stats.X_COORD += spd
-        
-        self.stats.Y_COORD += spd
-
-    def attack_ranged(self, x, y):
-        pass
-
-    def attack_melee(self, dir):
-        pass
+        if abs(self.velocityY) < self.stats.MOVEMENT_SPEED:
+            if loc[0] == 1:
+                self.velocityY -= spd
+            if loc[1] == 1:
+                self.velocityY += spd
+        if abs(self.velocityX) < self.stats.MOVEMENT_SPEED:
+            if loc[2] == 1:
+                self.velocityX -= spd
+            if loc[3] == 1:
+                self.velocityX += spd
+            self.ACTION = None

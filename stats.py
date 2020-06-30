@@ -1,15 +1,14 @@
 
 class Status:
-    def __init__(self, MAX_HP, HP, MP, SPD, X, Y, EFFECTS=[]):
+    def __init__(self, MAX_HP, HP, MP, SPD, DEX, DEF, EFFECTS=[]):
         self.MAX_HITPOINTS = MAX_HP
         self.HITPOINTS = HP
         self.MANA = MP
+        self.DEXTARITY = DEX
+        self.DEFENCE = DEF
         self.MAX_MANA = None
         self.MOVEMENT_SPEED = SPD
-        self.X_COORD = X
-        self.Y_COORD = Y
         self.EFFECTS = EFFECTS
-        self.XP = None
 
     def change_stat(self, stat, value):
         if stat == 'hp':

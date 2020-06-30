@@ -3,6 +3,7 @@ from _thread import start_new_thread
 import pickle
 from time import time, sleep
 from game import Game
+import traceback
 
 server = ''
 port = 5555
@@ -15,6 +16,7 @@ except socket.error as e:
     str(e)
 
 s.listen(2)
+
 print("Waiting for a connection, Server Started")
 
 connected = set()
@@ -23,11 +25,17 @@ idCount = 0
 
 
 def game_tread(gameId, t):
+    frame = 0
     while True:
+        frame += 1
+
+        if frame == 120:
+            frame = 0
+
         sleep(1/120)
         if gameId in games:
             game = games[gameId]
-            game.do_game_tick(time()-t)
+            game.do_game_tick(time()-t, frame)
 
 
 def threaded_client(conn, p, gameId):
@@ -54,8 +62,8 @@ def threaded_client(conn, p, gameId):
                     conn.sendall(pickle.dumps(game))
             else:
                 break
-        except TypeError:
-            print("Uh oh data is wrong type")
+        except Exception:
+            traceback.print_exc()
 
     print("Lost connection")
     try:
