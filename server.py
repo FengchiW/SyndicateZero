@@ -29,7 +29,7 @@ def threaded_client(conn, p, gameId):
 
     while True:
         try:
-            data = conn.recv(2048*4)
+            data = conn.recv(2048*2)
 
             if gameId in games:
                 game = games[gameId]
