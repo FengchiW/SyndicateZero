@@ -1,6 +1,6 @@
 import pygame
 from util.network import Network
-import game
+import slack
 # from util.display import Display
 
 

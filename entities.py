@@ -19,7 +19,7 @@ class Bullet:
         self.y += self.velocity * self.dir[1]
 
 
-class Enitity:
+class Player:
     def __init__(self, pid, name="NULL", icon="None"):
         self.id = pid
         self.x = 50
@@ -28,10 +28,8 @@ class Enitity:
         self.velocityY = 0
         self.name = name
         self.icon = icon
+        self.projectiles = []
         self.stats = Status(100, 100, 0, 50, 50, 0)
-        self.ACTION = None
-        self.A_DATA = None
-        self.ready = False
 
     def set_Stats(self, stat_Name, value):
         pass
@@ -52,17 +50,15 @@ class Enitity:
         else:
             self.y = abs(self.y)
 
-    def move_to_pos(self):
+    def move_to_pos(self, loc):
         spd = self.stats.MOVEMENT_SPEED / 25
-        loc = self.A_DATA
         if abs(self.velocityY) < self.stats.MOVEMENT_SPEED:
-            if loc[0] == 1:
+            if loc == 1:
                 self.velocityY -= spd
-            if loc[1] == 1:
+            if loc == 2:
                 self.velocityY += spd
         if abs(self.velocityX) < self.stats.MOVEMENT_SPEED:
-            if loc[2] == 1:
+            if loc == 3:
                 self.velocityX -= spd
-            if loc[3] == 1:
+            if loc == 4:
                 self.velocityX += spd
-            self.ACTION = None

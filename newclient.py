@@ -1,6 +1,8 @@
 import pygame
 from util.network import Network
-import slack
+from slack import Game
+from math import sqrt
+from entities import Player, Bullet
 # from util.display import Display
 
 
@@ -189,31 +191,51 @@ class GameScene(SceneBase):
     def __init__(self, n, pid):
         SceneBase.__init__(self)
         self.Network = n
+        self.game = self.Network.send("ready")
         self.shooting = False
-        self.pid = int(pid)
-
+        self.player = Player(pid)
+        
     def ProcessInput(self, events, pressed_keys):
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  
                 self.shooting = True
             elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 self.shooting = False
-        if self.shooting:
-            pos = pygame.mouse.get_pos()
-            self.Network.send("2,"+str(pos[0])+","+str(pos[1]))
-        w, d, a, s = "0", "0", "0", "0"
+
         if pressed_keys[pygame.K_w]:
-            w = "1"
+            self.player.move_to_pos(1)
         if pressed_keys[pygame.K_s]:
-            s = "1"
+            self.player.move_to_pos(2)
         if pressed_keys[pygame.K_a]:
-            a = "1"
+            self.player.move_to_pos(3)
         if pressed_keys[pygame.K_d]:
-            d = "1"
-        self.Network.send("1,"+w+","+s+","+a+","+d)
+            self.player.move_to_pos(4)
 
     def Update(self):
+        if self.shooting:
+            pos = pygame.mouse.get_pos()
+            self.player.projectiles.append(Bullet(self.player.id, self.player.x, self.player.y, pos[0], pos[1]))
+
+        self.player.update()
+
+        dead = []
+        for bullet in range(len(self.player.projectiles)):
+            curr = self.player.projectiles[bullet]
+            if sqrt((int(curr.x - curr.origin[0]) ** 2 + int(curr.y - curr.origin[1]) ** 2)) < curr.range:
+                for player in self.game.playerData:
+                    if player.id != curr.user:
+                        if (player.x - 16) < curr.x and (player.x + 16) > curr.x:
+                            if (player.y - 16) < curr.y and (player.y + 16) > curr.y:
+                                player.hit(5) # Damage
+                                dead.append(bullet)
+                self.player.projectiles[bullet].update()
+            else:
+                dead.append(bullet)
+
+        self.player.projectiles = [(self.player.projectiles[bullet]) for bullet in range(len(self.player.projectiles)) if bullet not in dead]
+
         try:
+            self.Network.send(self.player)
             self.game = self.Network.send("ready")
         except EOFError:
             print("Couldn't ready game")
@@ -223,14 +245,14 @@ class GameScene(SceneBase):
         screen.fill((200, 200, 200))
         font = pygame.font.SysFont("comicsans", 60)
 
-        heros = self.game.get_player_details()
+        heros = self.game.playerData
         
         for hero in heros:
             loc = (int(hero.x), int(hero.y))
             text = font.render("X", 1, (255, 0, 0), True)
             screen.blit(text, loc)
 
-        projectiles = self.game.get_projectiles()
+        projectiles = self.player.projectiles
 
         for bullet in projectiles:
             pygame.draw.circle(screen, (255, 0, 0), (int(bullet.x), int(bullet.y)), 5)
@@ -238,7 +260,7 @@ class GameScene(SceneBase):
         hp = pygame.Rect(0, 100, 1200, 100)
         pygame.draw.rect(screen, (0, 0, 0), hp)
 
-        curhp = pygame.Rect(0, 100, heros[self.pid].stats.HITPOINTS * 10, 100)
+        curhp = pygame.Rect(0, 100, heros[int(self.player.id)].stats.HITPOINTS * 10, 100)
         pygame.draw.rect(screen, (255, 0, 0), curhp)
 
 

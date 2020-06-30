@@ -2,7 +2,7 @@ import socket
 from _thread import start_new_thread
 import pickle
 from time import time, sleep
-from game import Game
+from slack import Game
 import traceback
 
 server = ''
@@ -46,7 +46,7 @@ def threaded_client(conn, p, gameId):
 
     while True:
         try:
-            data = conn.recv(2048*2).decode()
+            data = conn.recv(2048*4)
 
             if gameId in games:
                 game = games[gameId]
@@ -54,10 +54,7 @@ def threaded_client(conn, p, gameId):
                 if not data:
                     break
                 else:
-                    if data == "reset":
-                        game.resetWent()
-                    elif data != "ready":
-                        game.command(p, data)
+                    game.updateServer(p, data)
 
                     conn.sendall(pickle.dumps(game))
             else:
