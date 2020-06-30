@@ -32,7 +32,7 @@ def game_tread(gameId, t):
         if frame == 120:
             frame = 0
 
-        sleep(1/30)
+        sleep(1/120)
         if gameId in games:
             game = games[gameId]
             game.do_game_tick(time()-t, frame)
