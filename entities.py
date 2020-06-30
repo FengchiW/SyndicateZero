@@ -6,7 +6,7 @@ class Bullet:
     def __init__(self, team, x, y, fx, fy, pid="0"):
         self.id = pid
         self.user = team
-        self.velocity = 2
+        self.velocity = 3
         self.range = 300
         self.origin = (x, y)
         self.x = x

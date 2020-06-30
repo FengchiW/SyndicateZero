@@ -33,10 +33,15 @@ def run_game(width, height, fps, starting_scene):
     pygame.display.set_caption('SyndicateZero V0.3')
     screen = pygame.display.set_mode((width, height))
     clock = pygame.time.Clock()
+    frame = 0
 
     active_scene = starting_scene
 
     while active_scene is not None:
+        if frame < 30:
+            frame += 1
+        else:
+            frame = 0
         pressed_keys = pygame.key.get_pressed()
 
         # Event filtering
@@ -59,7 +64,7 @@ def run_game(width, height, fps, starting_scene):
                 filtered_events.append(event)
 
         active_scene.ProcessInput(filtered_events, pressed_keys)
-        active_scene.Update()
+        active_scene.Update(frame)
         active_scene.Render(screen)
 
         active_scene = active_scene.next
@@ -110,7 +115,7 @@ class MainMenu(SceneBase):
                 else:
                     pass
 
-    def Update(self):
+    def Update(self, frame):
         pass
 
     def Render(self, screen):
@@ -156,7 +161,7 @@ class GameLobby(SceneBase):
     def ProcessInput(self, events, pressed_keys):
         pass
 
-    def Update(self):
+    def Update(self, frame):
         print("Connecting to", self.n.addr[0], "on port", self.n.addr[1])
         self.connected = self.n.connect()
         if self.connected is False:
@@ -211,8 +216,8 @@ class GameScene(SceneBase):
         if pressed_keys[pygame.K_d]:
             self.player.move_to_pos(4)
 
-    def Update(self):
-        if self.shooting:
+    def Update(self, frame):
+        if self.shooting and frame % int(600/self.player.stats.DEXTARITY) == 0:
             pos = pygame.mouse.get_pos()
             self.player.projectiles.append(Bullet(self.player.id, self.player.x, self.player.y, pos[0], pos[1]))
 
@@ -252,10 +257,10 @@ class GameScene(SceneBase):
             text = font.render("X", 1, (255, 0, 0), True)
             screen.blit(text, loc)
 
-        projectiles = self.player.projectiles
+            projectiles = hero.projectiles
 
-        for bullet in projectiles:
-            pygame.draw.circle(screen, (255, 0, 0), (int(bullet.x), int(bullet.y)), 5)
+            for bullet in projectiles:
+                pygame.draw.circle(screen, (255, 0, 0), (int(bullet.x), int(bullet.y)), 5)
 
         hp = pygame.Rect(0, 100, 1200, 100)
         pygame.draw.rect(screen, (0, 0, 0), hp)

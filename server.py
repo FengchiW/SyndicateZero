@@ -23,26 +23,9 @@ connected = set()
 games = {}
 idCount = 0
 
-
-def game_tread(gameId, t):
-    frame = 0
-    while True:
-        frame += 1
-
-        if frame == 120:
-            frame = 0
-
-        sleep(1/27)
-        if gameId in games:
-            game = games[gameId]
-            game.do_game_tick(time()-t, frame)
-
-
 def threaded_client(conn, p, gameId):
     global idCount
     conn.send(str.encode(str(p)))
-
-    start_new_thread(game_tread, (gameId, time()))
 
     while True:
         try:

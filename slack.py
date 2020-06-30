@@ -20,10 +20,6 @@ class Game:
                     pid
                 ))
 
-    def do_game_tick(self, t, frame):
-        self.time = t
-        self.frame = frame
-
     # listens to server for input Server feed
     def updateServer(self, pid, data):
         if pickle.loads(data) != "ready":
