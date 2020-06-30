@@ -28,6 +28,7 @@ class SceneBase:
 
 def run_game(width, height, fps, starting_scene):
     pygame.init()
+    pygame.display.set_caption('SyndicateZero V0.3')
     screen = pygame.display.set_mode((width, height))
     clock = pygame.time.Clock()
 
@@ -126,7 +127,7 @@ class MainMenu(SceneBase):
         font = pygame.font.SysFont("comicsans", 30)
 
         text = font.render(
-            "Click Anywhere To connect to the main Default Server",
+            "Connect to the main server at 34.71.202.82",
             1,
             (100, 200, 100)
         )
@@ -161,7 +162,7 @@ class GameLobby(SceneBase):
             print(self.msg)
             self.attempts += 1
         else:
-            self.SwitchToScene(GameScene(self.n))
+            self.SwitchToScene(GameScene(self.n, self.connected))
         if self.attempts >= 6:
             print("Connection Failed")
             self.SwitchToScene(MainMenu())
@@ -185,10 +186,11 @@ class GameLobby(SceneBase):
 
 
 class GameScene(SceneBase):
-    def __init__(self, n):
+    def __init__(self, n, pid):
         SceneBase.__init__(self)
         self.Network = n
         self.shooting = False
+        self.pid = int(pid)
 
     def ProcessInput(self, events, pressed_keys):
         for event in events:
@@ -221,22 +223,23 @@ class GameScene(SceneBase):
         screen.fill((200, 200, 200))
         font = pygame.font.SysFont("comicsans", 60)
 
-        hero1 = self.game.get_player_details(0)
-        hero2 = self.game.get_player_details(1)
+        heros = self.game.get_player_details()
+        
+        for hero in heros:
+            loc = (int(hero.x), int(hero.y))
+            text = font.render("X", 1, (255, 0, 0), True)
+            screen.blit(text, loc)
 
         projectiles = self.game.get_projectiles()
 
         for bullet in projectiles:
             pygame.draw.circle(screen, (255, 0, 0), (int(bullet.x), int(bullet.y)), 5)
 
-        loc_h1 = (int(hero1.x), int(hero1.y))
-        loc_h2 = (int(hero2.x), int(hero2.y))
+        hp = pygame.Rect(0, 100, 1200, 100)
+        pygame.draw.rect(screen, (0, 0, 0), hp)
 
-        text = font.render("P", 1, (255, 0, 0), True)
-        screen.blit(text, loc_h1)
-
-        text = font.render("X", 1, (255, 0, 0), True)
-        screen.blit(text, loc_h2)
+        curhp = pygame.Rect(0, 100, heros[self.pid].stats.HITPOINTS * 10, 100)
+        pygame.draw.rect(screen, (255, 0, 0), curhp)
 
 
 run_game(1200, 800, 60, MainMenu())

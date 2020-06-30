@@ -32,7 +32,7 @@ def game_tread(gameId, t):
         if frame == 120:
             frame = 0
 
-        sleep(1/120)
+        sleep(1/30)
         if gameId in games:
             game = games[gameId]
             game.do_game_tick(time()-t, frame)
@@ -46,7 +46,7 @@ def threaded_client(conn, p, gameId):
 
     while True:
         try:
-            data = conn.recv(4096).decode()
+            data = conn.recv(2048*4).decode()
 
             if gameId in games:
                 game = games[gameId]
@@ -64,11 +64,11 @@ def threaded_client(conn, p, gameId):
                 break
         except Exception:
             traceback.print_exc()
+            break
 
     print("Lost connection")
     try:
-        del games[gameId]
-        print("Closing Game", gameId)
+        print("Player Disconnected", gameId, p)
     except KeyError:
         "Can't Close Game"
     idCount -= 1
@@ -80,17 +80,21 @@ try:
         conn, addr = s.accept()
         print("Listening at:", addr)
 
+        p = idCount % 5
         idCount += 1
-        p = 0
-        gameId = (idCount - 1)//2
-        if idCount % 2 == 1:
+
+        print(p)
+
+        gameId = (idCount - 1)//5
+        if idCount % 5 == 1:
             games[gameId] = Game(gameId)
             print("Creating a new game...")
             start_new_thread(threaded_client, (conn, p, gameId))
         else:
             games[gameId].ready = True
-            p = 1
             start_new_thread(threaded_client, (conn, p, gameId))
+
+        games[gameId].newplayer(p)
 
 except KeyboardInterrupt:
     s.close()
