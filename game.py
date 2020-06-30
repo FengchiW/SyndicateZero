@@ -32,7 +32,7 @@ class Game:
                     if player.id != curr.user:
                         if (player.x - 16) < curr.x and (player.x + 16) > curr.x:
                             if (player.y - 16) < curr.y and (player.y + 16) > curr.y:
-                                player.hit(5) # Damage
+                                player.hit(5)  # Damage
                                 dead.append(bullet)
                 self.projectiles[bullet].update()
             else:
