@@ -30,7 +30,7 @@ class SceneBase:
 
 def run_game(width, height, fps, starting_scene):
     pygame.init()
-    pygame.display.set_caption('SyndicateZero V0.3')
+    pygame.display.set_caption('SyndicateZero V0.5')
     screen = pygame.display.set_mode((width, height))
     clock = pygame.time.Clock()
     frame = 0
@@ -199,6 +199,7 @@ class GameScene(SceneBase):
         self.game = self.Network.send("ready")
         self.shooting = False
         self.player = Player(pid)
+        self.pid = int(pid)
         
     def ProcessInput(self, events, pressed_keys):
         for event in events:
@@ -217,6 +218,15 @@ class GameScene(SceneBase):
             self.player.move_to_pos(4)
 
     def Update(self, frame):
+        try:
+            self.game = self.Network.send("ready")
+            self.player.stats.HITPOINTS = self.game.playerData[self.pid].stats.HITPOINTS
+            if self.player.stats.HITPOINTS < 0:
+                self.SwitchToScene(MainMenu)
+        except EOFError:
+            print("Couldn't ready game")
+            self.SwitchToScene(MainMenu)
+
         if self.shooting and frame % int(600/self.player.stats.DEXTARITY) == 0:
             pos = pygame.mouse.get_pos()
             self.player.projectiles.append(Bullet(self.player.id, self.player.x, self.player.y, pos[0], pos[1]))
@@ -231,7 +241,7 @@ class GameScene(SceneBase):
                     if player.id != curr.user:
                         if (player.x - 16) < curr.x and (player.x + 16) > curr.x:
                             if (player.y - 16) < curr.y and (player.y + 16) > curr.y:
-                                player.hit(5) # Damage
+                                self.Network.send("hit"+str(player.id))
                                 dead.append(bullet)
                 self.player.projectiles[bullet].update()
             else:
@@ -241,10 +251,10 @@ class GameScene(SceneBase):
 
         try:
             self.Network.send(self.player)
-            self.game = self.Network.send("ready")
         except EOFError:
             print("Couldn't ready game")
             self.SwitchToScene(MainMenu)
+        
 
     def Render(self, screen):
         screen.fill((200, 200, 200))

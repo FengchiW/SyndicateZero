@@ -22,8 +22,13 @@ class Game:
 
     # listens to server for input Server feed
     def updateServer(self, pid, data):
-        if pickle.loads(data) != "ready":
-            self.playerData[pid] = pickle.loads(data)
+        data = pickle.loads(data)
+        if isinstance(data, str):
+            if data[:3] == "hit":
+                self.playerData[int(data[-1])].hit(5)
+                print(self.playerData[int(data[-1])].stats.HITPOINTS)
+        else:
+            self.playerData[pid] = data
 
     def connected(self):
         return self.ready
