@@ -32,7 +32,7 @@ def game_tread(gameId, t):
         if frame == 120:
             frame = 0
 
-        sleep(1/120)
+        sleep(1/27)
         if gameId in games:
             game = games[gameId]
             game.do_game_tick(time()-t, frame)
@@ -46,7 +46,7 @@ def threaded_client(conn, p, gameId):
 
     while True:
         try:
-            data = conn.recv(2048*4).decode()
+            data = conn.recv(2048*2).decode()
 
             if gameId in games:
                 game = games[gameId]
