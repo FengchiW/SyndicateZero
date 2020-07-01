@@ -30,7 +30,7 @@ class SceneBase:
 
 def run_game(width, height, fps, starting_scene):
     pygame.init()
-    pygame.display.set_caption('SyndicateZero V0.8')
+    pygame.display.set_caption('SyndicateZero V1.1')
     screen = pygame.display.set_mode((width, height))
     clock = pygame.time.Clock()
     frame = 0
@@ -124,7 +124,7 @@ class MainMenu(SceneBase):
         font = pygame.font.SysFont("comicsans", 60)
 
         text = font.render(
-            "Syndicate Zero v0.8",
+            "Syndicate Zero v1.1",
             1,
             (255, 0, 0)
         )
@@ -195,6 +195,7 @@ class GameLobby(SceneBase):
 class GameScene(SceneBase):
     def __init__(self, n, pid):
         SceneBase.__init__(self)
+        self.projectiles = []
         self.Network = n
         self.playerData = self.Network.send("ready")
         self.shooting = False
@@ -231,9 +232,9 @@ class GameScene(SceneBase):
     def ProcessInput(self, events, pressed_keys):
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  
-                self.shooting = True
+                self.player.shooting = True
             elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                self.shooting = False
+                self.player.shooting = False
 
         if pressed_keys[pygame.K_w]:
             self.move_to_pos(1)
@@ -258,15 +259,14 @@ class GameScene(SceneBase):
             print("Couldn't ready game")
             self.SwitchToScene(MainMenu())
 
-        if self.shooting and frame % int(600/self.player.stats.DEXTARITY) == 0:
-            pos = pygame.mouse.get_pos()
-            self.player.projectiles.append(Bullet(self.player.id, self.player.x, self.player.y, pos[0], pos[1]))
-
         self.move()
 
+        pos = pygame.mouse.get_pos()
+        self.player.lookingAt = (pos[0],pos[1])
+
         dead = []
-        for bullet in range(len(self.player.projectiles)):
-            curr = self.player.projectiles[bullet]
+        for bullet in range(len(self.projectiles)):
+            curr = self.projectiles[bullet]
             if sqrt((int(curr.x - curr.origin[0]) ** 2 + int(curr.y - curr.origin[1]) ** 2)) < 300:
                 for player in self.playerData:
                     if player.id != curr.id:
@@ -278,7 +278,14 @@ class GameScene(SceneBase):
             else:
                 dead.append(bullet)
 
-        self.player.projectiles = [(self.player.projectiles[bullet]) for bullet in range(len(self.player.projectiles)) if bullet not in dead]
+        self.projectiles = [(self.projectiles[bullet]) for bullet in range(len(self.projectiles)) if bullet not in dead]
+
+        heros = self.playerData
+
+        for hero in heros:
+            if hero.shooting and frame % int(600/hero.stats.DEXTARITY) == 0:
+                self.projectiles.append(Bullet(hero.id, hero.x, hero.y, hero.lookingAt[0], hero.lookingAt[1]))
+
 
         try:
             self.Network.send(self.player)
@@ -300,17 +307,16 @@ class GameScene(SceneBase):
 
             hp = pygame.Rect(loc[0] - 16, loc[1] + 42, 64, 10)
             pygame.draw.rect(screen, (0, 0, 0), hp)
-            curhp = pygame.Rect(loc[0] - 16, loc[1] + 42, 64 * (hero.stats.HITPOINTS/hero.stats.MAX_HITPOINTS) , 10)
+            curhp = pygame.Rect(loc[0] - 16, loc[1] + 42, int(64 * hero.stats.HITPOINTS/hero.stats.MAX_HITPOINTS) , 10)
             pygame.draw.rect(screen, (255, 0, 0), curhp)
 
-            projectiles = hero.projectiles
 
-            for bullet in projectiles:
-                pygame.draw.circle(screen, (255, 0, 0), (int(bullet.x), int(bullet.y)), 5)
+        for bullet in self.projectiles:
+            pygame.draw.circle(screen, (255, 0, 0), (int(bullet.x), int(bullet.y)), 5)
 
         hp = pygame.Rect(0, 750, 1200, 50)
         pygame.draw.rect(screen, (0, 0, 0), hp)
-        curhp = pygame.Rect(0, 750, 1200 * (self.player.stats.HITPOINTS/self.player.stats.MAX_HITPOINTS) , 50)
+        curhp = pygame.Rect(0, 750, int(1200 * self.player.stats.HITPOINTS/self.player.stats.MAX_HITPOINTS) , 50)
         pygame.draw.rect(screen, (255, 0, 0), curhp)
 
         font = pygame.font.SysFont("comicsans", 30)
@@ -322,7 +328,7 @@ class GameScene(SceneBase):
         )
 
 
-        screen.blit(text, (600 - text.get_width()/2, 800 - text.get_height()))
+        screen.blit(text, (int(600 - text.get_width()/2), int(800 - text.get_height())))
 
 
 run_game(1200, 800, 60, MainMenu())

@@ -20,7 +20,8 @@ class Player:
         self.velocityY = 0
         self.name = name
         self.icon = icon
-        self.projectiles = []
+        self.shooting = False
+        self.lookingAt = (0,0)
         self.stats = Status(100, 100, 0, 50, 50, 0)
 
     def hit(self, damage):
