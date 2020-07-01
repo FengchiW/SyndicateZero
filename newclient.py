@@ -30,7 +30,7 @@ class SceneBase:
 
 def run_game(width, height, fps, starting_scene):
     pygame.init()
-    pygame.display.set_caption('SyndicateZero V0.5')
+    pygame.display.set_caption('SyndicateZero V0.8')
     screen = pygame.display.set_mode((width, height))
     clock = pygame.time.Clock()
     frame = 0
@@ -124,7 +124,7 @@ class MainMenu(SceneBase):
         font = pygame.font.SysFont("comicsans", 60)
 
         text = font.render(
-            "Syndicate Zero",
+            "Syndicate Zero v0.8",
             1,
             (255, 0, 0)
         )
@@ -134,7 +134,7 @@ class MainMenu(SceneBase):
         font = pygame.font.SysFont("comicsans", 30)
 
         text = font.render(
-            "Connect to the main server at 34.71.202.82",
+            "Connect to the slow server at 34.71.202.82 or the FAST server at 172.105.110.216",
             1,
             (100, 200, 100)
         )
@@ -196,11 +196,38 @@ class GameScene(SceneBase):
     def __init__(self, n, pid):
         SceneBase.__init__(self)
         self.Network = n
-        self.game = self.Network.send("ready")
+        self.playerData = self.Network.send("ready")
         self.shooting = False
         self.player = Player(pid)
         self.pid = int(pid)
-        
+    
+    def move_to_pos(self, loc):
+            spd = self.player.stats.MOVEMENT_SPEED / 25
+            if abs(self.player.velocityY) < self.player.stats.MOVEMENT_SPEED:
+                if loc == 1:
+                    self.player.velocityY -= spd
+                if loc == 2:
+                    self.player.velocityY += spd
+            if abs(self.player.velocityX) < self.player.stats.MOVEMENT_SPEED:
+                if loc == 3:
+                    self.player.velocityX -= spd
+                if loc == 4:
+                    self.player.velocityX += spd
+    
+    def move(self):
+        if self.player.x < 0:
+            self.player.velocityX = 5
+        elif self.player.x > 1150:
+            self.player.velocityX = -5
+        if self.player.y < 0:
+            self.player.velocityY = 5
+        elif self.player.y > 700:
+            self.player.velocityY = -5
+        self.player.x += self.player.velocityX
+        self.player.velocityX *= 0.8
+        self.player.y += self.player.velocityY
+        self.player.velocityY *= 0.8
+
     def ProcessInput(self, events, pressed_keys):
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  
@@ -209,41 +236,45 @@ class GameScene(SceneBase):
                 self.shooting = False
 
         if pressed_keys[pygame.K_w]:
-            self.player.move_to_pos(1)
+            self.move_to_pos(1)
         if pressed_keys[pygame.K_s]:
-            self.player.move_to_pos(2)
+            self.move_to_pos(2)
         if pressed_keys[pygame.K_a]:
-            self.player.move_to_pos(3)
+            self.move_to_pos(3)
         if pressed_keys[pygame.K_d]:
-            self.player.move_to_pos(4)
+            self.move_to_pos(4)
+    
+    def bullet_move(self, b):
+        b.x += 5 * b.dir[0]
+        b.y += 5 * b.dir[1]
 
     def Update(self, frame):
         try:
-            self.game = self.Network.send("ready")
-            self.player.stats.HITPOINTS = self.game.playerData[self.pid].stats.HITPOINTS
+            self.playerData = self.Network.send("ready")
+            self.player.stats.HITPOINTS = self.playerData[self.pid].stats.HITPOINTS
             if self.player.stats.HITPOINTS < 0:
-                self.SwitchToScene(MainMenu)
+                self.SwitchToScene(MainMenu())
         except EOFError:
             print("Couldn't ready game")
-            self.SwitchToScene(MainMenu)
+            self.SwitchToScene(MainMenu())
 
         if self.shooting and frame % int(600/self.player.stats.DEXTARITY) == 0:
             pos = pygame.mouse.get_pos()
             self.player.projectiles.append(Bullet(self.player.id, self.player.x, self.player.y, pos[0], pos[1]))
 
-        self.player.update()
+        self.move()
 
         dead = []
         for bullet in range(len(self.player.projectiles)):
             curr = self.player.projectiles[bullet]
-            if sqrt((int(curr.x - curr.origin[0]) ** 2 + int(curr.y - curr.origin[1]) ** 2)) < curr.range:
-                for player in self.game.playerData:
-                    if player.id != curr.user:
+            if sqrt((int(curr.x - curr.origin[0]) ** 2 + int(curr.y - curr.origin[1]) ** 2)) < 300:
+                for player in self.playerData:
+                    if player.id != curr.id:
                         if (player.x - 16) < curr.x and (player.x + 16) > curr.x:
                             if (player.y - 16) < curr.y and (player.y + 16) > curr.y:
                                 self.Network.send("hit"+str(player.id))
                                 dead.append(bullet)
-                self.player.projectiles[bullet].update()
+                self.bullet_move(curr)
             else:
                 dead.append(bullet)
 
@@ -253,30 +284,45 @@ class GameScene(SceneBase):
             self.Network.send(self.player)
         except EOFError:
             print("Couldn't ready game")
-            self.SwitchToScene(MainMenu)
+            self.SwitchToScene(MainMenu())
         
 
     def Render(self, screen):
         screen.fill((200, 200, 200))
         font = pygame.font.SysFont("comicsans", 60)
 
-        heros = self.game.playerData
+        heros = self.playerData
         
         for hero in heros:
             loc = (int(hero.x), int(hero.y))
             text = font.render("X", 1, (255, 0, 0), True)
             screen.blit(text, loc)
 
+            hp = pygame.Rect(loc[0] - 16, loc[1] + 42, 64, 10)
+            pygame.draw.rect(screen, (0, 0, 0), hp)
+            curhp = pygame.Rect(loc[0] - 16, loc[1] + 42, 64 * (hero.stats.HITPOINTS/hero.stats.MAX_HITPOINTS) , 10)
+            pygame.draw.rect(screen, (255, 0, 0), curhp)
+
             projectiles = hero.projectiles
 
             for bullet in projectiles:
                 pygame.draw.circle(screen, (255, 0, 0), (int(bullet.x), int(bullet.y)), 5)
 
-        hp = pygame.Rect(0, 100, 1200, 100)
+        hp = pygame.Rect(0, 750, 1200, 50)
         pygame.draw.rect(screen, (0, 0, 0), hp)
-
-        curhp = pygame.Rect(0, 100, heros[int(self.player.id)].stats.HITPOINTS * 10, 100)
+        curhp = pygame.Rect(0, 750, 1200 * (self.player.stats.HITPOINTS/self.player.stats.MAX_HITPOINTS) , 50)
         pygame.draw.rect(screen, (255, 0, 0), curhp)
+
+        font = pygame.font.SysFont("comicsans", 30)
+
+        text = font.render(
+            str(self.player.stats.MAX_HITPOINTS) + " / " + str(self.player.stats.HITPOINTS),
+            1,
+            (0, 0, 0)
+        )
+
+
+        screen.blit(text, (600 - text.get_width()/2, 800 - text.get_height()))
 
 
 run_game(1200, 800, 60, MainMenu())

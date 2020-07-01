@@ -29,7 +29,7 @@ def threaded_client(conn, p, gameId):
 
     while True:
         try:
-            data = conn.recv(2048*2)
+            data = conn.recv(2048*4)
 
             if gameId in games:
                 game = games[gameId]
@@ -39,7 +39,7 @@ def threaded_client(conn, p, gameId):
                 else:
                     game.updateServer(p, data)
 
-                    conn.sendall(pickle.dumps(game))
+                    conn.sendall(pickle.dumps(game.playerData))
             else:
                 break
         except Exception:

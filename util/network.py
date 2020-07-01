@@ -33,7 +33,7 @@ class Network:
     def send(self, data):
         try:
             self.client.send(pickle.dumps(data))
-            rcv = self.client.recv(2048*2)
+            rcv = self.client.recv(2048*4)
             return pickle.loads(rcv)
         except socket.error as e:
             print(e)
