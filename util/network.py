@@ -29,6 +29,12 @@ class Network:
         except socket.gaierror:
             print("Server Doesn't exist")
             return False
+    
+    def disconect(self):
+        try:
+            self.client.close()
+        except Exception:
+            print("An Error Occured")
 
     def send(self, data):
         try:

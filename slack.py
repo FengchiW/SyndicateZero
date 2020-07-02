@@ -14,6 +14,14 @@ class Game:
         # Player objects in game
         self.playerData = []
 
+    def serverTick(self):
+        dead = []
+        for i in range(len(self.playerData)):
+            if self.playerData[i].stats.HITPOINTS < 0:
+                print("dead")
+                dead.append(i)
+        self.playerData = [self.playerData[pid] for pid in range(len(self.playerData)) if pid not in dead]
+
     def newplayer(self, pid):
         print("Newplayer")
         self.playerData.append(Player(
@@ -26,7 +34,6 @@ class Game:
         if isinstance(data, str):
             if data[:3] == "hit":
                 self.playerData[int(data[-1])].hit(5)
-                print(self.playerData[int(data[-1])].stats.HITPOINTS)
         else:
             self.playerData[pid] = data
 

@@ -5,11 +5,23 @@ from math import sqrt
 from entities import Player, Bullet
 # from util.display import Display
 
+version = "1.3.2"
+
+width = 1280
+height = 720
+
+class Background(pygame.sprite.Sprite):
+    def __init__(self, image_file, location):
+        pygame.sprite.Sprite.__init__(self)  #call Sprite initializer
+        self.image = pygame.image.load(image_file)
+        self.image = pygame.transform.scale(self.image, (1280, 720))
+        self.rect = self.image.get_rect()
+        self.rect.left, self.rect.top = location
 
 class SceneBase:
     def __init__(self):
         self.next = self
-        self.width = 1200
+        self.width = 1280
         self.height = 800
 
     def ProcessInput(self, events, pressed_keys):
@@ -30,7 +42,9 @@ class SceneBase:
 
 def run_game(width, height, fps, starting_scene):
     pygame.init()
-    pygame.display.set_caption('SyndicateZero V1.1')
+    gameIcon = pygame.image.load('res/Icon.PNG')
+    pygame.display.set_icon(gameIcon)
+    pygame.display.set_caption('SyndicateZero V' + version)
     screen = pygame.display.set_mode((width, height))
     clock = pygame.time.Clock()
     frame = 0
@@ -83,6 +97,7 @@ class MainMenu(SceneBase):
         self.color_active = pygame.Color('dodgerblue2')
         self.input_text = None
         self.color = self.color_inactive
+        self.bg = Background('res/background.PNG', [0,0])
 
     def ProcessInput(self, events, pressed_keys):
         for event in events:
@@ -123,13 +138,25 @@ class MainMenu(SceneBase):
 
         font = pygame.font.SysFont("comicsans", 60)
 
+        screen.blit(self.bg.image, self.bg.rect)
+
         text = font.render(
-            "Syndicate Zero v1.1",
+            "Syndicate Zero",
             1,
             (255, 0, 0)
         )
 
         screen.blit(text, (0, 0))
+
+        font = pygame.font.SysFont("comicsans", 20)
+
+        text = font.render(
+            "Client Version " + version,
+            1,
+            (0, 0, 0)
+        )
+
+        screen.blit(text, (0, 800 - text.get_height()))
 
         font = pygame.font.SysFont("comicsans", 30)
 
@@ -201,33 +228,35 @@ class GameScene(SceneBase):
         self.shooting = False
         self.player = Player(pid)
         self.pid = int(pid)
-    
+        self.velocityY = 0
+        self.velocityX = 0
+
     def move_to_pos(self, loc):
             spd = self.player.stats.MOVEMENT_SPEED / 25
-            if abs(self.player.velocityY) < self.player.stats.MOVEMENT_SPEED:
+            if abs(self.velocityY) < self.player.stats.MOVEMENT_SPEED:
                 if loc == 1:
-                    self.player.velocityY -= spd
+                    self.velocityY -= spd
                 if loc == 2:
-                    self.player.velocityY += spd
-            if abs(self.player.velocityX) < self.player.stats.MOVEMENT_SPEED:
+                    self.velocityY += spd
+            if abs(self.velocityX) < self.player.stats.MOVEMENT_SPEED:
                 if loc == 3:
-                    self.player.velocityX -= spd
+                    self.velocityX -= spd
                 if loc == 4:
-                    self.player.velocityX += spd
+                    self.velocityX += spd
     
     def move(self):
         if self.player.x < 0:
-            self.player.velocityX = 5
+            self.velocityX = 5
         elif self.player.x > 1150:
-            self.player.velocityX = -5
+            self.velocityX = -5
         if self.player.y < 0:
-            self.player.velocityY = 5
+            self.velocityY = 5
         elif self.player.y > 700:
-            self.player.velocityY = -5
-        self.player.x += self.player.velocityX
-        self.player.velocityX *= 0.8
-        self.player.y += self.player.velocityY
-        self.player.velocityY *= 0.8
+            self.velocityY = -5
+        self.player.x += self.velocityX
+        self.velocityX *= 0.8
+        self.player.y += self.velocityY
+        self.velocityY *= 0.8
 
     def ProcessInput(self, events, pressed_keys):
         for event in events:
@@ -253,11 +282,12 @@ class GameScene(SceneBase):
         try:
             self.playerData = self.Network.send("ready")
             self.player.stats.HITPOINTS = self.playerData[self.pid].stats.HITPOINTS
-            if self.player.stats.HITPOINTS < 0:
-                self.SwitchToScene(MainMenu())
         except EOFError:
             print("Couldn't ready game")
+            self.Network.disconect()
             self.SwitchToScene(MainMenu())
+        except IndexError:
+            self.player.id = self.playerData[int(self.player.id) - 1].id
 
         self.move()
 
@@ -289,8 +319,12 @@ class GameScene(SceneBase):
 
         try:
             self.Network.send(self.player)
+            if self.player.stats.HITPOINTS < 0:
+                self.Network.disconect()
+                self.SwitchToScene(MainMenu())
         except EOFError:
             print("Couldn't ready game")
+            self.Network.disconect()
             self.SwitchToScene(MainMenu())
         
 
@@ -302,7 +336,7 @@ class GameScene(SceneBase):
         
         for hero in heros:
             loc = (int(hero.x), int(hero.y))
-            text = font.render("X", 1, (255, 0, 0), True)
+            text = font.render("X", 1, (int(255 * ((int(hero.id)+1)/(len(heros)+1))), 255 * ((int(hero.id)+1)/(len(heros)+1)), 0), True)
             screen.blit(text, loc)
 
             hp = pygame.Rect(loc[0] - 16, loc[1] + 42, 64, 10)
@@ -329,6 +363,4 @@ class GameScene(SceneBase):
 
 
         screen.blit(text, (int(600 - text.get_width()/2), int(800 - text.get_height())))
-
-
-run_game(1200, 800, 60, MainMenu())
+    

@@ -28,11 +28,14 @@ def threaded_client(conn, p, gameId):
     conn.send(str.encode(str(p)))
 
     while True:
+        
         try:
             data = conn.recv(2048*4)
 
             if gameId in games:
                 game = games[gameId]
+
+                game.serverTick()
 
                 if not data:
                     break
@@ -46,11 +49,8 @@ def threaded_client(conn, p, gameId):
             traceback.print_exc()
             break
 
-    print("Lost connection")
-    try:
-        print("Player Disconnected", gameId, p)
-    except KeyError:
-        "Can't Close Game"
+    print("Player Disconnected", gameId, p)
+
     idCount -= 1
     conn.close()
 
@@ -60,6 +60,7 @@ try:
         conn, addr = s.accept()
         print("Listening at:", addr)
 
+        print(idCount)
         p = idCount % 5
         idCount += 1
 

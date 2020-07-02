@@ -16,8 +16,6 @@ class Player:
         self.id = pid
         self.x = 50
         self.y = 50
-        self.velocityX = 0
-        self.velocityY = 0
         self.name = name
         self.icon = icon
         self.shooting = False
