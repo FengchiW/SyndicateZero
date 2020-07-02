@@ -364,3 +364,4 @@ class GameScene(SceneBase):
 
         screen.blit(text, (int(600 - text.get_width()/2), int(800 - text.get_height())))
     
+run_game(1280, 720, 60, MainMenu())
