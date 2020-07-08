@@ -33,3 +33,5 @@ when ran from the directory the main file is located it produces:
 ```
 
 However, when running without icon="icon.ico" it is able to work without a problem
+
+I could switch over to pypackage, which I heard was better for producing a excacuatable from python files, however, getting that to work is many many questions in it of itself.

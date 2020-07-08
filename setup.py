@@ -1,11 +1,22 @@
-import cx_Freeze
+from cx_Freeze import setup, Executable 
+import os
 
-executables = [cx_Freeze.Executable("client.py", targetName="SyndicateZero.exe", icon="icon.ico")]
+include_files = ["res/"]
 
-cx_Freeze.setup(
-    name="SyndicateZero",
-    version="1.3.7",
-    description="Let the Syndicates Fight!",
-    options={"build_exe": {"packages": ["pygame"], "include_files": "res/"}},
-    executables=executables
-    )
+build_exe_options = {"includes": ["pygame"], "include_files": include_files}
+
+icondir = os.getcwd()+'\icon.ico'
+
+exe = Executable(
+      script="client.py",
+      base="Win32GUI",
+      icon=icondir
+     )
+setup(
+      name="Syndicate Zero",
+      version="1.4.0",
+      author="Wilson F. Wang",
+      description="Testing Build",
+      options = {"build_exe": build_exe_options},
+      executables=[exe]
+      )
