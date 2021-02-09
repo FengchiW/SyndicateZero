@@ -43,7 +43,7 @@ class WorldScene extends Phaser.Scene {
     // create player animations
     this.createAnimations();
 
-    // user input
+    // Controls
     this.cursors = this.input.keyboard.addKeys(
         {up:Phaser.Input.Keyboard.KeyCodes.W,
         down:Phaser.Input.Keyboard.KeyCodes.S,
@@ -93,10 +93,9 @@ class WorldScene extends Phaser.Scene {
     var tiles = this.map.addTilesetImage('spritesheet', 'tiles', 16, 16, 1, 2);
 
     // creating the layers
-    this.map.createStaticLayer('Grass', tiles, 0, 0);
-    var objects = this.map.createStaticLayer('Obstacles', tiles, 0, 0);
-
-    objects.setCollisionByExclusion([-1]);
+    this.grass = this.map.createStaticLayer('Grass', tiles, 0, 0);
+    this.objects = this.map.createStaticLayer('Obstacles', tiles, 0, 0);
+    this.objects.setCollisionByExclusion([-1]);
 
     // don't go out of the map
     this.physics.world.bounds.width = this.map.widthInPixels;
@@ -150,6 +149,8 @@ class WorldScene extends Phaser.Scene {
     this.container = this.add.container(playerInfo.x, playerInfo.y);
     this.container.setSize(16, 16);
     this.physics.world.enable(this.container);
+
+    this.physics.add.collider(this.container, this.objects);
     this.container.add(this.player);
 
     // update camera
@@ -160,8 +161,7 @@ class WorldScene extends Phaser.Scene {
   }
 
   addOtherPlayers(playerInfo) {
-    const otherPlayer = this.add.sprite(playerInfo.x, playerInfo.y, 'player', 9);
-    otherPlayer.setTint(Math.random() * 0xffffff);
+    const otherPlayer = this.add.sprite(playerInfo.x, playerInfo.y, 'player', 6);
     otherPlayer.playerId = playerInfo.playerId;
     this.otherPlayers.add(otherPlayer);
   }
