@@ -94,7 +94,9 @@ class WorldScene extends Phaser.Scene {
 
     // creating the layers
     this.map.createStaticLayer('Grass', tiles, 0, 0);
-    this.map.createStaticLayer('Obstacles', tiles, 0, 0);
+    objects = this.map.createStaticLayer('Obstacles', tiles, 0, 0);
+
+    objects.setCollisionByExclusion([-1]);
 
     // don't go out of the map
     this.physics.world.bounds.width = this.map.widthInPixels;
@@ -155,8 +157,6 @@ class WorldScene extends Phaser.Scene {
 
     // don't go out of the map
     this.container.body.setCollideWorldBounds(true);
-
-    this.container.body.setOnCollideWith(t)
   }
 
   addOtherPlayers(playerInfo) {
