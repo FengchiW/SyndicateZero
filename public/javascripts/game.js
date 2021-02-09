@@ -89,7 +89,7 @@ class WorldScene extends Phaser.Scene {
     var tiles = this.map.addTilesetImage('spritesheet', 'tiles', 16, 16, 1, 2);
 
     // creating the layers
-    this.map.createStaticLayer('Grass', tiles, 0, 0);
+    var grass = this.map.createStaticLayer('Grass', tiles, 0, 0);
     var obstacles = this.map.createStaticLayer('Obstacles', tiles, 0, 0);
 
     obstacles.setCollisionByExclusion([-1]);
