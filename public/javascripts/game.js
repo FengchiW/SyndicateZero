@@ -38,9 +38,14 @@ class WorldScene extends Phaser.Scene {
         // create map
         this.createMap();
 
-        this.bullets = new Bullets(this);
         // create player animations
         this.createAnimations();
+
+
+        this.bullets = new Bullets(this);
+
+        this.physics.add.collider(this.bullets, this.objects, this.bulletCollide, null, this);
+        this.physics.add.collider(this.bullets, this.otherPlayers, this.bulletCollide, null, this);
 
         // Controls
         this.cursors = this.input.keyboard.addKeys({
@@ -81,6 +86,10 @@ class WorldScene extends Phaser.Scene {
                 }
             }.bind(this));
         }.bind(this));
+    }
+
+    bulletCollide(bullet) {
+        bullet.bullethit()
     }
 
     createMap() {

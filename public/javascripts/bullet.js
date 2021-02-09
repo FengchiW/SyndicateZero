@@ -40,6 +40,14 @@ class Bullet extends Phaser.Physics.Arcade.Sprite
             this.setVisible(false);
         }
     }
+
+    bullethit (obj)
+    {
+        console.log("hit")
+        this.reset(0, 0)
+        this.setActive(false);
+        this.setVisible(false);
+    }
 }
 
 class Bullets extends Phaser.Physics.Arcade.Group
