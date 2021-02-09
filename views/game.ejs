@@ -1,13 +1,26 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <script src="//cdn.jsdelivr.net/npm/phaser@3.52.0/dist/phaser.min.js"></script>
-    <script src="/javascripts/game.js"></script>
-  </head>
-  <body>
-    <div id="content" style="display: block; width: 100%; text-align: center"></div>
-  </body>
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Game test</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/phaser@3.16.2/dist/phaser.min.js"></script>
+  <script src="https://cdn.socket.io/3.1.1/socket.io.min.js"></script>
+  <link href="assets/css/game.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="flex-container">
+    <div id="content"></div>
+    <div id="chatContainer">
+      <div class="chatArea">
+        <ul id="messages" class="messages"></ul>
+      </div>
+      <input id='inputMessage' class="inputMessage" placeholder="Type here..." type="text">
+    </div>
+  </div>
+  <script src="/javascripts/game.js"></script>
+</body>
+
 </html>
