@@ -93,10 +93,8 @@ class WorldScene extends Phaser.Scene {
     var tiles = this.map.addTilesetImage('spritesheet', 'tiles', 16, 16, 1, 2);
 
     // creating the layers
-    var grass = this.map.createStaticLayer('Grass', tiles, 0, 0);
-    var obstacles = this.map.createStaticLayer('Obstacles', tiles, 0, 0);
-
-    obstacles.setCollisionByExclusion([-1]);
+    this.map.createStaticLayer('Grass', tiles, 0, 0);
+    this.map.createStaticLayer('Obstacles', tiles, 0, 0);
 
     // don't go out of the map
     this.physics.world.bounds.width = this.map.widthInPixels;
