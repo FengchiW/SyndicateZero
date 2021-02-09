@@ -1,3 +1,6 @@
+const messagebox = document.getElementById("inputMessage")
+const Currentmessages = document.getElementById("messages")
+
 class BootScene extends Phaser.Scene {
     constructor() {
         super({
@@ -52,7 +55,8 @@ class WorldScene extends Phaser.Scene {
             up: Phaser.Input.Keyboard.KeyCodes.W,
             down: Phaser.Input.Keyboard.KeyCodes.S,
             left: Phaser.Input.Keyboard.KeyCodes.A,
-            right: Phaser.Input.Keyboard.KeyCodes.D
+            right: Phaser.Input.Keyboard.KeyCodes.D,
+            enter: Phaser.Input.Keyboard.KeyCodes.ENTER
         });
 
         // listen for web socket events
@@ -68,6 +72,13 @@ class WorldScene extends Phaser.Scene {
 
         this.socket.on('newPlayer', function(playerInfo) {
             this.addOtherPlayers(playerInfo);
+        }.bind(this));
+
+        this.socket.on('message', function(messageData) {
+            var node = document.createElement("LI")
+            var textnode = document.createTextNode(messageData.user.toString() + ": " + messageData.text)
+            node.appendChild(textnode)
+            Currentmessages.appendChild(node);
         }.bind(this));
 
         this.socket.on('playerdisconnected', function(playerId) {
@@ -88,8 +99,14 @@ class WorldScene extends Phaser.Scene {
         }.bind(this));
     }
 
-    bulletCollide(bullet) {
+    bulletCollide(bullet, player) {
         bullet.bullethit()
+        if(player !== undefined)
+        {
+            var uid = player.playerId
+            console.log("uid:", uid)
+        }
+        
     }
 
     createMap() {
@@ -198,6 +215,15 @@ class WorldScene extends Phaser.Scene {
                 this.container.body.setVelocityY(-80);
             } else if (this.cursors.down.isDown) {
                 this.container.body.setVelocityY(80);
+            }
+
+            if (this.cursors.enter.isDown) {
+                console.log("message")
+                if (messagebox.value !== "") 
+                {
+                this.socket.emit('message', messagebox.value);
+                messagebox.value = "";
+                }
             }
 
             var x = this.container.x;
