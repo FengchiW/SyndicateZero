@@ -6,11 +6,20 @@ class Bullet extends Phaser.Physics.Arcade.Sprite
     constructor (scene, x, y)
     {
         super(scene, x, y, 'bullet');
+        this.startX = 0
+        this.startY = 0
+    }
+
+    reset(x, y) 
+    {
+        this.startX = x
+        this.startY = y
+        this.body.reset(x ,y)
     }
 
     fire (x, y, dirx, diry)
     {
-        this.body.reset(x, y);
+        this.reset(x, y);
 
         this.setActive(true);
         this.setVisible(true);
@@ -23,8 +32,10 @@ class Bullet extends Phaser.Physics.Arcade.Sprite
     {
         super.preUpdate(time, delta);
 
-        if (this.y <= -32)
+        if (Math.sqrt(Math.pow((this.x - this.startX), 2) + Math.pow((this.y - this.startY), 2) ) > 100)
         {
+            console.log(this.startX, this.startY, this.x, this.y)
+            this.reset(0, 0)
             this.setActive(false);
             this.setVisible(false);
         }
