@@ -1,0 +1,35 @@
+========================
+|    Syndicate Zero    |
+========================
+
+  Change Log
+==============
+
+Version 1.00.00
+2022-08-16
+  - Project started
+  - Worked on the basic outline of the code
+  - Added Raylib and setup the underlying game engine
+  - Worked on conceptualizing the game
+
+Version 1.01.00
+2022-08-17
+  - Added the game loop
+  - Finished the conceptualizing of the game
+  - Began working on the actual game mechanics
+  - Generated art for the game
+
+Version 1.02.00
+2022-08-18
+  - Started laying out the other scenes and the game mechanics
+  - Continued working on the main game starting with a single level
+
+Version 1.03.00
+2022-08-19
+  - Last update before vacation
+  - Going to make small progress with some basic game setup
+  - Reworking some of the file structure
+  - Investigate the best method to save game data
+  - Adding to github repository
+  - First commit documented in github
+  - Added a hover effect to the tiles in the game [needs reworking]

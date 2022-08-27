@@ -1,0 +1,22 @@
+Syndicate Zero:
+
+Turn based game
+    - Each player has a hand of cards
+    - Each player has a Deck
+    - They play cards based on the mana they have that turn [generally this is the turn number]
+    - Players start with 10 HP on their main based
+    - Cards can move up to their speed units away
+    - Cards can attack other cards
+    - Cards can attack Players
+    - Some cards have ranged attacks
+    - When cards attack other cards, if they are in range, they do damage
+        - If the card lives, then it will also deal its damage to the attacking Card
+    - Cards can be healed
+    - Cards can be buffed
+    - Cards can be debuffed
+    - Cards can be targeted
+
+Semi-linear randomly generated map.
+    - Similar to pegglin and encyption
+
+Story Heavy Still needs to be developed

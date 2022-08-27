@@ -1,0 +1,24 @@
+id ICON "res/icon.ico"
+1 VERSIONINFO
+FILEVERSION     1,8,2,4
+PRODUCTVERSION  1,8,2,4
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904E4"
+    BEGIN
+      VALUE "CompanyName", "The Syndicate Project"
+      VALUE "FileDescription", "A Game"
+      VALUE "FileVersion", "1.0"
+      VALUE "InternalName", "The Syndicate Project"
+      VALUE "LegalCopyright", "Wilson Fengchi Wang"
+      VALUE "OriginalFilename", "TitleTBD.exe"
+      VALUE "ProductName", "TitleTBD"
+      VALUE "ProductVersion", "0.0.1"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1252
+  END
+END
