@@ -1,14 +1,16 @@
 // Copyright [2022] <Wilson F Wang>
 
-#ifndef E__FUTURE_GAME_SRC_SCENES_GAME_H_
-#define E__FUTURE_GAME_SRC_SCENES_GAME_H_
+#ifndef SRC_SCENES_GAME_H_
+#define SRC_SCENES_GAME_H_
 
+#include <raylib.h>
 #include <utility>
 #include <vector>
 #include "SceneManager.h"
 #include "../GameTools/Card.h"
 #include "../GameTools/Hand.h"
 #include "../GameTools/Deck.h"
+#include "../GameTools/Tile.h"
 #include "../GameTools/json.h"
 #include "../GameTools/Types.h"
 #include "../GameTools/Constants.h"
@@ -22,18 +24,14 @@ class Game final : public Scene {
     void update(const float dt) override;
     void HandleInput() override;
  private:
-    float BoardAnchorX = SCREENWIDTH / 2 - (TILEWIDTH * 4) / 2;
-    float BoardAnchorY = SCREENHEIGHT / 2 - (TILEHEIGHT * 2) / 2;
-    float BoardPaddingBottom = TILEHEIGHT;
-    std::pair<TileType, Card*> map[4][MAPWIDTH];
+    Tile* map[MAPHEIGHT][MAPWIDTH] = {};
     std::vector<Card*> units;
-    int mx{}, my{};
+    Vector2 mousePos;
     unsigned int turn{};
-    int lastHoveredTileX{0}, lastHoveredTileY{0};
     bool hasMouseMoved{};
     int playerHealth{}, enemyHealth{};
     Hand hand;
     Deck deck;
 };
 
-#endif  // E__FUTURE_GAME_SRC_SCENES_GAME_H_
+#endif  // SRC_SCENES_GAME_H_

@@ -2,11 +2,13 @@
 
 #include <raylib.h>
 #include <stdio.h>
+#include <tuple>
 #include "Game.h"
 #include "../GameTools/Hand.h"
 #include "../GameTools/Deck.h"
 #include "../GameTools/json.h"
 #include "../GameTools/Card.h"
+#include "../GameTools/Tile.h"
 #include "../GameTools/Types.h"
 #include "../GameTools/Constants.h"
 
@@ -14,7 +16,14 @@ Game::Game(SceneManager* sm) : Scene(sm) {
     // initialize map
     for (int i = 0; i < MAPHEIGHT; i++) {
         for (int j = 0; j < MAPWIDTH; j++) {
-            map[i][j].first = GRASS;
+            map[i][j] = new Tile(
+                GRASS,
+                NORMAL,
+                Rectangle{static_cast<float>(j * TILEWIDTH),
+                          static_cast<float>(i * TILEHEIGHT),
+                          TILEWIDTH,
+                          TILEHEIGHT},
+                nullptr);
         }
     }
 }
@@ -23,54 +32,47 @@ void Game::draw() {
     // draw the game map
     for (int i = 0; i < MAPHEIGHT; i++) {
         for (int j = 0; j < MAPWIDTH; j++) {
-            switch (map[i][j].first) {
-                case GRASS:
-                    DrawRectangle((j+OFFSET) * TILEWIDTH, (i+1) * TILEHEIGHT, TILEWIDTH, TILEHEIGHT, GREEN);
-                    break;
-                default:
-                    DrawRectangle((j+OFFSET) * TILEWIDTH, (i+1) * TILEHEIGHT, TILEWIDTH, TILEHEIGHT, RED);
-                    break;
+            switch (map[i][j]->type) {
+            case GRASS:
+                DrawRectangleRec(map[i][j]->rect, GREEN);
+                break;
+            default:
+                DrawRectangleRec(map[i][j]->rect, RED);
+                break;
+            }
+
+            if (map[i][j]->status == HOVERED) {
+                DrawRectangleRec(map[i][j]->rect, Color{255, 0, 0, 100});
             }
         }
     }
-
-    // draw cards in hand and deck
 }
 
 void Game::update([[maybe_unused]] const float dt) {
-
     if (hasMouseMoved) {
         // check if mouse is over a tile
-        int y = mx / TILEWIDTH - OFFSET;
-        int x = my / TILEHEIGHT - 1;
-        if ( x < MAPHEIGHT && y < MAPWIDTH ) {
-            // Mouse is over a tile
-            if (lastHoveredTileX != x || lastHoveredTileY != y) {
-                // Mouse has moved to a new tile
-                map[lastHoveredTileX][lastHoveredTileY].first = GRASS;
-                lastHoveredTileX = x;
-                lastHoveredTileY = y;
-                hasMouseMoved = false;
-                map[x][y].first = HOVERED;
-                // check if there is a unit on the tile
+        for (int i = 0; i < MAPHEIGHT; i++) {
+            for (int j = 0; j < MAPWIDTH; j++) {
+                if (CheckCollisionPointRec(mousePos, map[i][j]->rect)) {
+                    // set the tile to hover
+                    map[i][j]->status = HOVERED;
+                } else {
+                    // set the tile to normal
+                    map[i][j]->status = NORMAL;
+                }
             }
-        } else {
-            map[lastHoveredTileX][lastHoveredTileY].first = GRASS;
-            hasMouseMoved = false;
         }
     }
 }
 
 void Game::HandleInput() {
     // mouse position
-    int mouse_x = GetMouseX();
-    int mouse_y = GetMouseY();
+    Vector2 currentMousePosition = GetMousePosition();
 
     // check if the mouse has moved
-    if (mouse_x != mx || mouse_y != my) {
+    if (mousePos.x != currentMousePosition.x && mousePos.y != currentMousePosition.y) {
         hasMouseMoved = true;
-        mx = mouse_x;
-        my = mouse_y;
+        mousePos = currentMousePosition;
     }
 }
 

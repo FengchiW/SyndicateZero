@@ -33,3 +33,18 @@ Version 1.03.00
   - Adding to github repository
   - First commit documented in github
   - Added a hover effect to the tiles in the game [needs reworking]
+
+Version 1.04.22828
+2022-08-22
+  - Updated how the rectangular grid is drawn, now the rectangles are inside the map object
+  - Updated how tile hover is handled [in map obj]
+  - Changed map obj to a tuple instead of a pair
+  - Fixed the header guards on some files
+  - Created a Tile Class and moved it into its own file
+  - Fixed issues with the games hover detection
+  - Renamed the python partner program to packager
+  - Resolved some name conflict issues
+  - Removed the last hovered tile from game class as its now unneeded
+  - Removed all the padding stuff I don't like how its done reworking
+  - Added an alpha layer for hover effects
+  - Changed the way version numbers work now MAJOR.MINOR[PUSH].YYMDD
