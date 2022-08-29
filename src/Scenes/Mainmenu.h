@@ -4,10 +4,11 @@
 #define E__FUTURE_GAME_SRC_SCENES_MAINMENU_H_
 
 #include "SceneManager.h"
+#include "../GameTools/Constants.h"
 
 class MainMenu final : public Scene {
  public:
-    MainMenu(SceneManager* sceneManager);
+    MainMenu(SceneManager* sceneManager, StrList* cm);
     ~MainMenu();
 
     void draw() override;

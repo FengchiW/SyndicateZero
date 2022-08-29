@@ -2,8 +2,9 @@
 
 #include "Mainmenu.h"
 #include "SceneManager.h"
+#include "../GameTools/Constants.h"
 
-MainMenu::MainMenu(SceneManager* sm) : Scene(sm) {
+MainMenu::MainMenu(SceneManager* sm, StrList* cm) : Scene(sm, cm) {
 }
 
 void MainMenu::draw() {

@@ -17,7 +17,7 @@
 
 class Game final : public Scene {
  public:
-    Game(SceneManager* sceneManager);
+    Game(SceneManager* sceneManager, StrList* Console);
     ~Game();
 
     void draw() override;

@@ -18,11 +18,11 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv) {
 
     InitWindow(SCREENWIDTH, SCREENHEIGHT, "SyndicateZero");
     SetTargetFPS(120);
-    Image logo = LoadImage("res/icon.png");
-    SetWindowIcon(logo);
+    //Image logo = LoadImage("res/icon.png");
+    //SetWindowIcon(logo);
 
     SceneManager sceneManager;
-    sceneManager.push(std::make_unique<SplashScreen>(&sceneManager));
+    sceneManager.push(std::make_unique<SplashScreen>(&sceneManager, &consoleMessages));
     sceneManager.update();
 
     float dt = 0.0f;

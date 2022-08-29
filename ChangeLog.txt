@@ -63,3 +63,13 @@ Version 1.1.5
   - Adding a debug console to the Scenes [possibly bugged]
   - Made some changes to the formatting of the header guards
   - Updated constants to predefine a list of strings
+
+Version 1.1.6
+2022-08-29
+  - [personal] Got the project working on my secondary laptop
+  - [Personal] Got c++ linter working on secondary laptop
+  - [TODO] do the same on main laptopa
+  - Added some updates to make migration of the project between devices easier
+  - Change the compliation code a rework may be needed soon
+  - Did some futher code clean up and Fixed the issues that adding the debug menu caused
+  - [Future] There should be a way to load and unload textures to memory

@@ -26,7 +26,7 @@ void SplashScreen::update([[maybe_unused]] const float dt) {
 
     // Transition to next scene after 2.5 seconds
     if (time > 2.5f) {
-        sceneManager->changeScene(std::make_unique<Game>(sceneManager));
+        sceneManager->changeScene(std::make_unique<Game>(sceneManager, consoleMessages));
     }
 }
 
