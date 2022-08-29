@@ -8,7 +8,7 @@
 
 class MainMenu final : public Scene {
  public:
-    MainMenu(SceneManager* sceneManager, StrList* cm);
+    MainMenu(SceneManager* sceneManager);
     ~MainMenu();
 
     void draw() override;

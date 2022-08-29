@@ -12,7 +12,7 @@
 #include "../GameTools/Types.h"
 #include "../GameTools/Constants.h"
 
-Game::Game(SceneManager* sm, StrList* cm) : Scene(sm, cm) {
+Game::Game(SceneManager* sm) : Scene(sm) {
     // initialize map
     for (int i = 0; i < MAPHEIGHT; i++) {
         for (int j = 0; j < MAPWIDTH; j++) {

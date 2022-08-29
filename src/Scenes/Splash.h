@@ -10,7 +10,7 @@
 
 class SplashScreen final : public Scene {
  public:
-    SplashScreen(SceneManager* sceneManager, std::vector<std::string>* consoleMessages);
+    SplashScreen(SceneManager* sceneManager);
     ~SplashScreen();
 
     void draw() override;

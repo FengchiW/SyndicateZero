@@ -6,20 +6,20 @@
 
 void SceneManager::push(std::unique_ptr<Scene> scene) {
     Action action;
-    action.type = Action::Type::PUSH;
+    action.type = ActionType::PUSH;
     action.scene = std::move(scene);
     actions.push_back(std::move(action));
 }
 
 void SceneManager::pop() {
     Action action;
-    action.type = Action::Type::POP;
+    action.type = ActionType::POP;
     actions.push_back(std::move(action));
 }
 
 void SceneManager::changeScene(std::unique_ptr<Scene> scene) {
     Action action;
-    action.type = Action::Type::REPLACE;
+    action.type = ActionType::REPLACE;
     action.scene = std::move(scene);
     actions.push_back(std::move(action));
 }
@@ -29,14 +29,14 @@ Scene& SceneManager::peek() { return *scenes.top(); }
 void SceneManager::update() {
     for (Action& action : actions) {
         switch (action.type) {
-            case Action::Type::PUSH:
+            case ActionType::PUSH:
                 scenes.push(std::move(action.scene));
                 break;
-            case Action::Type::POP:
+            case ActionType::POP:
                 scenes.pop();
                 break;
-            case Action::Type::REPLACE:
-                while (!scenes.empty()) {
+            case ActionType::REPLACE:
+                while (!isEmpty()) {
                     scenes.pop();
                 }
                 scenes.push(std::move(action.scene));
@@ -48,5 +48,4 @@ void SceneManager::update() {
 
 bool SceneManager::isEmpty() const { return scenes.empty(); }
 
-Scene::Scene(SceneManager* _sm, std::vector<std::string>* _cm)
-: sceneManager(_sm), consoleMessages(_cm) {}
+Scene::Scene(SceneManager* _sm) : sceneManager(_sm) {}
