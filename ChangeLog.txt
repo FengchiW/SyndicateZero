@@ -77,3 +77,11 @@ Version 1.1.6 - 1.1.7
     + This fixed some linking issues
   - Changed the way the debug is handled, it will now be a part of scenemanager which makes far more scenes
   
+Version 1.1.8
+2022-08-29
+  - Fixed the issue with transition from screens forgot to update the screen manager
+  - Did some stylistic clean up on the debug menu
+
+Version 1.1.9
+2022-08-29
+  -

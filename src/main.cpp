@@ -40,12 +40,15 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv) {
             // draw FPS
             DrawText(("FPS: " + std::to_string(GetFPS())).c_str(), 10, 10, 20, WHITE);
             // draw a Console
+            int currentmessage = 1;
             for (std::string msg : sceneManager.consoleMessages) {
-                DrawText(msg.c_str(), 10, 30 + sceneManager.consoleMessages.size() * 20, 20, WHITE);
+                DrawText(msg.c_str(), 10, 20 + 20 * currentmessage, 20, WHITE);
+                currentmessage++;
             }
         }
-
         EndDrawing();
+
+        sceneManager.update();
     }
 
     return 0;

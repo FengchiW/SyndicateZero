@@ -6,6 +6,7 @@
 
 void SceneManager::push(std::unique_ptr<Scene> scene) {
     Action action;
+    consoleMessages.push_back("LOG: SCENE PUSH ACTION");
     action.type = ActionType::PUSH;
     action.scene = std::move(scene);
     actions.push_back(std::move(action));
@@ -13,12 +14,14 @@ void SceneManager::push(std::unique_ptr<Scene> scene) {
 
 void SceneManager::pop() {
     Action action;
+    consoleMessages.push_back("LOG: SCENE POP ACTION");
     action.type = ActionType::POP;
     actions.push_back(std::move(action));
 }
 
 void SceneManager::changeScene(std::unique_ptr<Scene> scene) {
     Action action;
+    consoleMessages.push_back("LOG: SCENE REPLACE ACTION");
     action.type = ActionType::REPLACE;
     action.scene = std::move(scene);
     actions.push_back(std::move(action));
@@ -31,15 +34,19 @@ void SceneManager::update() {
         switch (action.type) {
             case ActionType::PUSH:
                 scenes.push(std::move(action.scene));
+                consoleMessages.push_back("SCENE PUSHED");
                 break;
             case ActionType::POP:
                 scenes.pop();
+                consoleMessages.push_back("SCENE POPPED");
                 break;
             case ActionType::REPLACE:
-                while (!isEmpty()) {
+                while (!scenes.empty()) {
                     scenes.pop();
+                    consoleMessages.push_back("SCENE POPPED");
                 }
                 scenes.push(std::move(action.scene));
+                consoleMessages.push_back("SCENE PUSHED");
                 break;
         }
     }
