@@ -1,11 +1,13 @@
 // Copyright [2022] <Wilson F Wang>
 
-#ifndef E__FUTURE_GAME_SRC_SCENES_SCENEMANAGER_H_
-#define E__FUTURE_GAME_SRC_SCENES_SCENEMANAGER_H_
+#ifndef SRC_SCENES_SCENEMANAGER_H_
+#define SRC_SCENES_SCENEMANAGER_H_
 
 #include <vector>
+#include <string>
 #include <stack>
 #include <memory>
+#include "../GameTools/Constants.h"
 
 class Scene;
 
@@ -38,7 +40,7 @@ class SceneManager final {
 
 class Scene {
  public:
-    explicit Scene(SceneManager* sceneManager);
+    explicit Scene(SceneManager* sceneManager, StrList* consoleMessages);
     virtual ~Scene() = default;
 
     virtual void update([[maybe_unused]] const float dt) = 0;
@@ -51,6 +53,7 @@ class Scene {
 
  protected:
     SceneManager* sceneManager;
+    StrList* consoleMessages;
 };
 
-#endif  // E__FUTURE_GAME_SRC_SCENES_SCENEMANAGER_H_
+#endif  // SRC_SCENES_SCENEMANAGER_H_

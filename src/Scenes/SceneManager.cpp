@@ -48,4 +48,5 @@ void SceneManager::update() {
 
 bool SceneManager::isEmpty() const { return scenes.empty(); }
 
-Scene::Scene(SceneManager* sceneManager) : sceneManager(sceneManager) {}
+Scene::Scene(SceneManager* _sm, std::vector<std::string>* _cm)
+: sceneManager(_sm), consoleMessages(_cm) {}

@@ -1,15 +1,16 @@
 // Copyright [2022] <Wilson F Wang>
 
-#ifndef E__FUTURE_GAME_SRC_SCENES_SPLASH_H_
-#define E__FUTURE_GAME_SRC_SCENES_SPLASH_H_
+#ifndef SRC_SCENES_SPLASH_H_
+#define SRC_SCENES_SPLASH_H_
 
 #include <utility>
 #include <vector>
+#include <string>
 #include "SceneManager.h"
 
 class SplashScreen final : public Scene {
  public:
-    SplashScreen(SceneManager* sceneManager);
+    SplashScreen(SceneManager* sceneManager, std::vector<std::string>* consoleMessages);
     ~SplashScreen();
 
     void draw() override;
@@ -17,4 +18,4 @@ class SplashScreen final : public Scene {
     void HandleInput() override;
 };
 
-#endif  // E__FUTURE_GAME_SRC_SCENES_SPLASH_H_
+#endif  // SRC_SCENES_SPLASH_H_

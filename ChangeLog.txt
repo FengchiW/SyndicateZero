@@ -5,6 +5,7 @@
   Change Log
 ==============
 
+[Version 1 - The beginning]
 Version 1.00.00
 2022-08-16
   - Project started
@@ -34,7 +35,7 @@ Version 1.03.00
   - First commit documented in github
   - Added a hover effect to the tiles in the game [needs reworking]
 
-Version 1.04.22828
+Version 1.04.22828X
 2022-08-22
   - Updated how the rectangular grid is drawn, now the rectangles are inside the map object
   - Updated how tile hover is handled [in map obj]
@@ -48,3 +49,17 @@ Version 1.04.22828
   - Removed all the padding stuff I don't like how its done reworking
   - Added an alpha layer for hover effects
   - Changed the way version numbers work now MAJOR.MINOR[PUSH].YYMDD
+
+{Minor 1 - Code Clean}
+Version 1.1.5
+2022-08-29
+  - I don't like the versioning structure so I changed it again
+  - New versions will be Major.Minor.[CommitNo]
+  - Major will have large titles
+  - Minors will also have small titles
+  - Majors updates every release
+  - Minors updates every beta [large commit] and reset every release
+  - Working on quick splash screen and possibly the main menu
+  - Adding a debug console to the Scenes [possibly bugged]
+  - Made some changes to the formatting of the header guards
+  - Updated constants to predefine a list of strings
