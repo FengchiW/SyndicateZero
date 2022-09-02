@@ -84,4 +84,8 @@ Version 1.1.8
 
 Version 1.1.9
 2022-08-29
-  -
+  - Added the res file to gitignore it shouldn't be There
+  - Manually updated the resource file, some adjustment is needed here
+  - [X] Changed the Card class to use unique pointers to the unit
+  - [X] Change the deck obj to have unique pointers to the cards
+  - Added the skeleton for the main menu

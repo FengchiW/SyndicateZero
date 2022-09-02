@@ -8,6 +8,7 @@
 
 // Unit
 struct Unit {
+    Unit(int, int, UnitType, int, int, int, int);
     int x;
     int y;
     UnitType t;

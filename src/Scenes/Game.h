@@ -5,13 +5,12 @@
 
 #include <raylib.h>
 #include <utility>
+#include <memory>
+#include <stack>
 #include <vector>
 #include "SceneManager.h"
 #include "../GameTools/Card.h"
-#include "../GameTools/Hand.h"
-#include "../GameTools/Deck.h"
 #include "../GameTools/Tile.h"
-#include "../GameTools/json.h"
 #include "../GameTools/Types.h"
 #include "../GameTools/Constants.h"
 
@@ -25,13 +24,14 @@ class Game final : public Scene {
     void HandleInput() override;
  private:
     Tile* map[MAPHEIGHT][MAPWIDTH] = {};
-    std::vector<Card*> units;
     Vector2 mousePos;
     unsigned int turn{};
     bool hasMouseMoved{};
     int playerHealth{}, enemyHealth{};
-    Hand hand;
-    Deck deck;
+    std::stack<std::unique_ptr<Card>> deck;
+    std::vector<std::unique_ptr<Card>> hand;
+    std::stack<std::unique_ptr<Card>> opponentDeck;
+    std::vector<std::unique_ptr<Card>> opponentHand;
 };
 
 #endif  // SRC_SCENES_GAME_H_

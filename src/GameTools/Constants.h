@@ -12,5 +12,6 @@ const int TILEWIDTH = SCREENWIDTH / (MAPWIDTH + 2 * OFFSET);
 const int TILEHEIGHT = SCREENHEIGHT / 7;
 
 #define StrList std::vector<std::string>
+#define Cardptr std::unique_ptr<Card>
 
 #endif  // SRC_GAMETOOLS_CONSTANTS_H_

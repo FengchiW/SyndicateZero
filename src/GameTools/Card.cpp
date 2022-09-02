@@ -10,7 +10,7 @@ Card::Card(int x, int y, UnitType t,
          std::string description,
          CardStates state) {
     // initialize the unit
-    unit = {x, y, t, health, speed, attack, range, UnitTexture};
+    unit = Unit(x, y, t, health, speed, attack, range, UnitTexture);
     this->state = state;
     this->name = name;
     this->description = description;

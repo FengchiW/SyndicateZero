@@ -10,12 +10,11 @@
 #include "Scenes/Splash.h"
 #include "GameTools/Constants.h"
 
-bool __DEBUG_MODE = true;
-
 int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv) {
     // Initialization
     InitWindow(SCREENWIDTH, SCREENHEIGHT, "SyndicateZero");
     SetTargetFPS(120);
+    bool __DEBUG_MODE = false;
     //Image logo = LoadImage("res/icon.png");
     //SetWindowIcon(logo);
 
@@ -27,6 +26,10 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv) {
 
     // Main game loop
     while (!WindowShouldClose()) {
+        // input
+        if(IsKeyPressed(KEY_BACKSLASH)) {
+            __DEBUG_MODE = !__DEBUG_MODE;
+        }
         // Update
         dt = GetFrameTime();
         sceneManager.peek().update(dt);
@@ -42,7 +45,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv) {
             // draw a Console
             int currentmessage = 1;
             for (std::string msg : sceneManager.consoleMessages) {
-                DrawText(msg.c_str(), 10, 20 + 20 * currentmessage, 20, WHITE);
+                DrawText(msg.c_str(), 10, 20 + 10 * currentmessage, 10, WHITE);
                 currentmessage++;
             }
         }
