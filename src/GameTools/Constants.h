@@ -3,15 +3,14 @@
 #ifndef SRC_GAMETOOLS_CONSTANTS_H_
 #define SRC_GAMETOOLS_CONSTANTS_H_
 
-const int SCREENWIDTH = 1200;
-const int SCREENHEIGHT = 600;
-const int MAPWIDTH = 10;
-const int MAPHEIGHT = 4;
-const int OFFSET = 2;
-const int TILEWIDTH = SCREENWIDTH / (MAPWIDTH + 2 * OFFSET);
-const int TILEHEIGHT = SCREENHEIGHT / 7;
+#define uint unsigned int
 
-#define StrList std::vector<std::string>
-#define Cardptr std::unique_ptr<Card>
+#define _Default_Screen_Width    (static_cast<uint>(1200))
+#define _Default_Screen_Height   (static_cast<uint>(600))
+#define _Default_MapWidth        (static_cast<uint>(10))
+#define _Default_MapHeight       (static_cast<uint>(4))
+
+#define StrList                  std::vector<std::string>
+#define Cardpointer              std::unique_ptr<Card>
 
 #endif  // SRC_GAMETOOLS_CONSTANTS_H_

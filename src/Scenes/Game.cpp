@@ -2,11 +2,7 @@
 
 #include <raylib.h>
 #include <stdio.h>
-#include <tuple>
 #include "Game.h"
-#include "../GameTools/Hand.h"
-#include "../GameTools/Deck.h"
-#include "../GameTools/json.h"
 #include "../GameTools/Card.h"
 #include "../GameTools/Tile.h"
 #include "../GameTools/Types.h"
@@ -14,15 +10,15 @@
 
 Game::Game(SceneManager* sm) : Scene(sm) {
     // initialize map
-    for (int i = 0; i < MAPHEIGHT; i++) {
-        for (int j = 0; j < MAPWIDTH; j++) {
+    for (uint i = 0; i < _Default_MapHeight; i++) {
+        for (uint j = 0; j < _Default_MapWidth; j++) {
             map[i][j] = new Tile(
                 GRASS,
                 NORMAL,
                 Rectangle{static_cast<float>(j * TILEWIDTH),
                           static_cast<float>(i * TILEHEIGHT),
-                          TILEWIDTH,
-                          TILEHEIGHT},
+                          _Default_Screen_Width / (_Default_MapWidth + 2),
+                          _Default_Screen_Height / 7},
                 nullptr);
         }
     }
@@ -30,8 +26,8 @@ Game::Game(SceneManager* sm) : Scene(sm) {
 
 void Game::draw() {
     // draw the game map
-    for (int i = 0; i < MAPHEIGHT; i++) {
-        for (int j = 0; j < MAPWIDTH; j++) {
+    for (int i = 0; i < mapHeight; i++) {
+        for (int j = 0; j < mapWidth; j++) {
             switch (map[i][j]->type) {
             case GRASS:
                 DrawRectangleRec(map[i][j]->rect, GREEN);
@@ -51,8 +47,8 @@ void Game::draw() {
 void Game::update([[maybe_unused]] const float dt) {
     if (hasMouseMoved) {
         // check if mouse is over a tile
-        for (int i = 0; i < MAPHEIGHT; i++) {
-            for (int j = 0; j < MAPWIDTH; j++) {
+        for (int i = 0; i < mapHeight; i++) {
+            for (int j = 0; j < mapWidth; j++) {
                 if (CheckCollisionPointRec(mousePos, map[i][j]->rect)) {
                     // set the tile to hover
                     map[i][j]->status = HOVERED;
@@ -77,8 +73,10 @@ void Game::HandleInput() {
 }
 
 Game::~Game() {
-    // delete all units in hand and deck
-    for (auto unit : units) {
-        delete unit;
+    // delete the map
+    for (int i = 0; i < MAPHEIGHT; i++) {
+        for (int j = 0; j < MAPWIDTH; j++) {
+            delete map[i][j];
+        }
     }
 }

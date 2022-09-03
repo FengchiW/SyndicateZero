@@ -1,6 +1,6 @@
 // Copyright [2022] <Wilson F Wang>
-#ifndef E__FUTURE_GAME_SRC_GAMETOOLS_CARD_H_
-#define E__FUTURE_GAME_SRC_GAMETOOLS_CARD_H_
+#ifndef SRC_GAMETOOLS_CARD_H_
+#define SRC_GAMETOOLS_CARD_H_
 
 #include "Types.h"
 #include <raylib.h>
@@ -39,4 +39,4 @@ class Card {
     Texture2D CardTexture;
 };
 
-#endif  // E__FUTURE_GAME_SRC_GAMETOOLS_CARD_H_
+#endif  // SRC_GAMETOOLS_CARD_H_
