@@ -1,7 +1,3 @@
-========================
-|    Syndicate Zero    |
-========================
-
 # Change Log
 
 Changes to this project will be documented in this file.
@@ -109,3 +105,21 @@ Post Version 1.1.5, this project adheres to [Semantic Versioning](https://semver
   ### Fixed
     - Type issues with the map int vs uint
 
+## [1.2.0] - 2022-09-03
+  ### Changed
+    - Changed some Type definitions to be typedefs instead of defines
+    - Moved build tools to their own folder
+    - Moved all the includes to their own folder
+      + this broke all the dynamic imports
+  ### Fixed
+    - A lot of the statical imports
+    - Continued to resolve lint errors
+    - Fixed all the include issues
+    - Changed the incorrect header guards
+    - Fixed issues with symbol linking
+  ### Added
+    - New structure uint2 that has two uint position values
+    - A make file to make compile times much faster and debugging easier
+  ### Deprecated
+    - buildtools folder, both the packager and compile.bat
+      + Packager will return but with different functionality

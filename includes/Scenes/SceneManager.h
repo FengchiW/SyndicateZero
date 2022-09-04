@@ -1,13 +1,13 @@
 // Copyright [2022] <Wilson F Wang>
 
-#ifndef SRC_SCENES_SCENEMANAGER_H_
-#define SRC_SCENES_SCENEMANAGER_H_
+#ifndef INCLUDES_SCENES_SCENEMANAGER_H_
+#define INCLUDES_SCENES_SCENEMANAGER_H_
 
 #include <vector>
 #include <string>
 #include <stack>
 #include <memory>
-#include "../GameTools/Constants.h"
+#include "../Constants.h"
 
 class Scene;
 
@@ -50,4 +50,4 @@ class Scene {
     SceneManager* sceneManager;
 };
 
-#endif  // SRC_SCENES_SCENEMANAGER_H_
+#endif  // INCLUDES_SCENES_SCENEMANAGER_H_

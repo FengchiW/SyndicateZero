@@ -1,6 +1,6 @@
 // Copyright [2022] <Wilson F Wang>
 
-#include "Card.h"
+#include "../../includes/GameTools/Card.h"
 
 Card::Card(int x, int y, UnitType t,
          int health, int speed, int attack, int range,

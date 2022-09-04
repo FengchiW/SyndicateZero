@@ -1,8 +1,7 @@
 // Copyright [2022] <Wilson F Wang>
 
-#include "Mainmenu.h"
-#include "SceneManager.h"
-#include "../GameTools/Constants.h"
+#include "../../includes/Scenes/Mainmenu.h"
+#include "../../includes/Scenes/SceneManager.h"
 
 MainMenu::MainMenu(SceneManager* sm) : Scene(sm) {
 }

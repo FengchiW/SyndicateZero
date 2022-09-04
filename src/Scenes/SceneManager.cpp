@@ -2,7 +2,7 @@
 
 #include <raylib.h>
 #include <utility>
-#include "SceneManager.h"
+#include "../../includes/Scenes/SceneManager.h"
 
 void SceneManager::push(std::unique_ptr<Scene> scene) {
     Action action;

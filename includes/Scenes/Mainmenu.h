@@ -1,10 +1,9 @@
 // Copyright [2022] <Wilson F Wang>
 
-#ifndef E__FUTURE_GAME_SRC_SCENES_MAINMENU_H_
-#define E__FUTURE_GAME_SRC_SCENES_MAINMENU_H_
+#ifndef INCLUDES_SCENES_MAINMENU_H_
+#define INCLUDES_SCENES_MAINMENU_H_
 
 #include "SceneManager.h"
-#include "../GameTools/Constants.h"
 
 class MainMenu final : public Scene {
  public:
@@ -17,4 +16,4 @@ class MainMenu final : public Scene {
 };
 
 
-#endif  // E__FUTURE_GAME_SRC_SCENES_MAINMENU_H_
+#endif  // INCLUDES_SCENES_MAINMENU_H_

@@ -1,7 +1,7 @@
 // Copyright [2022] <Wilson F Wang>
 
-#ifndef SRC_SCENES_GAME_H_
-#define SRC_SCENES_GAME_H_
+#ifndef INCLUDES_SCENES_GAME_H_
+#define INCLUDES_SCENES_GAME_H_
 
 #include <raylib.h>
 #include <utility>
@@ -12,7 +12,8 @@
 #include "../GameTools/Card.h"
 #include "../GameTools/Tile.h"
 #include "../GameTools/Types.h"
-#include "../GameTools/Constants.h"
+#include "../Constants.h"
+
 class Game final : public Scene {
  public:
     Game(SceneManager* sceneManager);
@@ -34,7 +35,7 @@ class Game final : public Scene {
     std::vector<std::unique_ptr<Card>> opponentHand;
     int TILEWIDTH {_Default_Screen_Width / (_Default_MapWidth + 2)};
     int TILEHEIGHT {_Default_Screen_Height / 7};
-    Vector2 mapsize {_Default_MapWidth, _Default_MapHeight};
+    mapCoord2 mapSize {_Default_MapWidth, _Default_MapHeight};
 };
 
-#endif  // SRC_SCENES_GAME_H_
+#endif  // INCLUDES_SCENES_GAME_H_

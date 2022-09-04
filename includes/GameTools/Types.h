@@ -1,7 +1,7 @@
 // Copyright [2022] <Wilson F Wang>
 
-#ifndef SRC_GAMETOOLS_TYPES_H_
-#define SRC_GAMETOOLS_TYPES_H_
+#ifndef INCLUDES_GAMETOOLS_TYPES_H_
+#define INCLUDES_GAMETOOLS_TYPES_H_
 
 // tiles can be grass, water, mountain, etc.
 enum TileType {
@@ -34,4 +34,4 @@ enum CardStates {
     PLAYED
 };
 
-#endif  // SRC_GAMETOOLS_TYPES_H_
+#endif  // INCLUDES_GAMETOOLS_TYPES_H_

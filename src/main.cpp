@@ -6,17 +6,20 @@
 #include <stdio.h>
 #include <vector>
 #include <memory>
-#include "Scenes/SceneManager.h"
-#include "Scenes/Splash.h"
-#include "GameTools/Constants.h"
+#include "../includes/Scenes/SceneManager.h"
+#include "../includes/Scenes/Splash.h"
+#include "../includes/Constants.h"
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv) {
     // Initialization
-    InitWindow(SCREENWIDTH, SCREENHEIGHT, "SyndicateZero");
+    InitWindow(_Default_Screen_Width,
+              _Default_Screen_Height,
+               "SyndicateZero");
+
     SetTargetFPS(120);
     bool __DEBUG_MODE = false;
-    //Image logo = LoadImage("res/icon.png");
-    //SetWindowIcon(logo);
+    // Image logo = LoadImage("res/icon.png");
+    // SetWindowIcon(logo);
 
     SceneManager sceneManager;
     sceneManager.push(std::make_unique<SplashScreen>(&sceneManager));
@@ -27,7 +30,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv) {
     // Main game loop
     while (!WindowShouldClose()) {
         // input
-        if(IsKeyPressed(KEY_BACKSLASH)) {
+        if (IsKeyPressed(KEY_BACKSLASH)) {
             __DEBUG_MODE = !__DEBUG_MODE;
         }
         // Update
@@ -43,16 +46,18 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char** argv) {
             // draw FPS
             DrawText(("FPS: " + std::to_string(GetFPS())).c_str(), 10, 10, 20, WHITE);
             // draw a Console
-            int currentmessage = 1;
+            int currentMessage = 1;
             for (std::string msg : sceneManager.consoleMessages) {
-                DrawText(msg.c_str(), 10, 20 + 10 * currentmessage, 10, WHITE);
-                currentmessage++;
+                DrawText(msg.c_str(), 10, 20 + 10 * currentMessage, 10, WHITE);
+                currentMessage++;
             }
         }
         EndDrawing();
 
         sceneManager.update();
     }
+
+    printf("Exiting Game...\n");
 
     return 0;
 }

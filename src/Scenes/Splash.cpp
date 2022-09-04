@@ -1,11 +1,11 @@
 // Copyright [2022] <Wilson F Wang>
 
-#include "Splash.h"
-#include "SceneManager.h"
 #include <raylib.h>
-#include "Game.h"
 #include <memory>
 #include <string>
+#include "../../includes/Scenes/Splash.h"
+#include "../../includes/Scenes/SceneManager.h"
+#include "../../includes/Scenes/Game.h"
 
 SplashScreen::SplashScreen(SceneManager* sm) : Scene(sm) {}
 

@@ -1,17 +1,15 @@
 // Copyright [2022] <Wilson F Wang>
 
 #include <raylib.h>
-#include <stdio.h>
-#include "Game.h"
-#include "../GameTools/Card.h"
-#include "../GameTools/Tile.h"
-#include "../GameTools/Types.h"
-#include "../GameTools/Constants.h"
+#include "../../includes/Scenes/Game.h"
+#include "../../includes/GameTools/Tile.h"
+#include "../../includes/GameTools/Card.h"
+#include "../../includes/Constants.h"
 
 Game::Game(SceneManager* sm) : Scene(sm) {
     // initialize map
-    for (uint i = 0; i < _Default_MapHeight; i++) {
-        for (uint j = 0; j < _Default_MapWidth; j++) {
+    for (mapCoord i = 0; i < _Default_MapHeight; i++) {
+        for (mapCoord j = 0; j < _Default_MapWidth; j++) {
             map[i][j] = new Tile(
                 GRASS,
                 NORMAL,
@@ -26,8 +24,8 @@ Game::Game(SceneManager* sm) : Scene(sm) {
 
 void Game::draw() {
     // draw the game map
-    for (int i = 0; i < mapHeight; i++) {
-        for (int j = 0; j < mapWidth; j++) {
+    for (mapCoord i = 0; i < mapSize.y; i++) {
+        for (mapCoord j = 0; j < mapSize.x; j++) {
             switch (map[i][j]->type) {
             case GRASS:
                 DrawRectangleRec(map[i][j]->rect, GREEN);
@@ -47,8 +45,8 @@ void Game::draw() {
 void Game::update([[maybe_unused]] const float dt) {
     if (hasMouseMoved) {
         // check if mouse is over a tile
-        for (int i = 0; i < mapHeight; i++) {
-            for (int j = 0; j < mapWidth; j++) {
+        for (mapCoord i = 0; i < mapSize.y; i++) {
+            for (mapCoord j = 0; j < mapSize.x; j++) {
                 if (CheckCollisionPointRec(mousePos, map[i][j]->rect)) {
                     // set the tile to hover
                     map[i][j]->status = HOVERED;
@@ -74,8 +72,8 @@ void Game::HandleInput() {
 
 Game::~Game() {
     // delete the map
-    for (int i = 0; i < MAPHEIGHT; i++) {
-        for (int j = 0; j < MAPWIDTH; j++) {
+    for (int i = 0; i < mapSize.x; i++) {
+        for (int j = 0; j < mapSize.y; j++) {
             delete map[i][j];
         }
     }

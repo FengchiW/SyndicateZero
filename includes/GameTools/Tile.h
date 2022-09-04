@@ -1,8 +1,10 @@
 // Copyright [2022] <Wilson F Wang>
 
-#ifndef SRC_GAMETOOLS_TILE_H_
-#define SRC_GAMETOOLS_TILE_H_
+#ifndef INCLUDES_GAMETOOLS_TILE_H_
+#define INCLUDES_GAMETOOLS_TILE_H_
 
+#include "Card.h"
+#include <raylib.h>
 #include <memory>
 
 struct Tile {
@@ -13,4 +15,4 @@ struct Tile {
     std::unique_ptr<Card> card;
 };
 
-#endif  // SRC_GAMETOOLS_TILE_H_
+#endif  // INCLUDES_GAMETOOLS_TILE_H_
