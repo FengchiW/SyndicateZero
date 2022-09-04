@@ -4,6 +4,10 @@
 #define INCLUDES_SCENES_MAINMENU_H_
 
 #include "SceneManager.h"
+#include <raylib.h>
+#include <utility>
+#include <vector>
+#include <string>
 
 class MainMenu final : public Scene {
  public:
@@ -13,6 +17,15 @@ class MainMenu final : public Scene {
     void draw() override;
     void update(const float dt) override;
     void HandleInput() override;
+
+    struct Button {
+        Rectangle rect;
+        std::string text;
+        Color color;
+    };
+
+ private:
+    std::vector<Button> buttons;
 };
 
 

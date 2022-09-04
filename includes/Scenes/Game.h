@@ -29,12 +29,10 @@ class Game final : public Scene {
     unsigned int turn{0};
     bool hasMouseMoved{false};
     int playerHealth{30}, enemyHealth{30};
-    std::stack<std::unique_ptr<Card>> deck;
-    std::vector<std::unique_ptr<Card>> hand;
     std::stack<std::unique_ptr<Card>> opponentDeck;
     std::vector<std::unique_ptr<Card>> opponentHand;
-    int TILEWIDTH {_Default_Screen_Width / (_Default_MapWidth + 2)};
-    int TILEHEIGHT {_Default_Screen_Height / 7};
+    mapCoord2 tileSize {_Default_Screen_Width / (_Default_MapWidth + 2),
+                        _Default_Screen_Height / 7};
     mapCoord2 mapSize {_Default_MapWidth, _Default_MapHeight};
 };
 

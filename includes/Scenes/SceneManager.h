@@ -31,8 +31,15 @@ class SceneManager final {
     Scene& peek();
     bool isEmpty() const;
 
-    StrList consoleMessages;
+    void logMessage(const std::string& message);
+    void logError(const std::string& message);
+    void logWarning(const std::string& message);
+    void clearLog();
+
+    StrList getConsoleMessages() const;
+
  private:
+    StrList consoleMessages;
     std::stack<std::unique_ptr<Scene>> scenes;
     std::vector<Action> actions;
 };

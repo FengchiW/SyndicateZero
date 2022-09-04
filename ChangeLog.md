@@ -123,3 +123,14 @@ Post Version 1.1.5, this project adheres to [Semantic Versioning](https://semver
   ### Deprecated
     - buildtools folder, both the packager and compile.bat
       + Packager will return but with different functionality
+
+## [1.2.1] - 2022-09-04
+  ### Added
+    - Player Class to house the player objects
+    - Added setters and getters to the player class
+    - A Main Menu
+  ### Fixed
+    - So issues with debug menu not displaying
+  ### Changed
+    - How debug messages are logged into the console
+    - Modified the make file so it now sets the version for the game

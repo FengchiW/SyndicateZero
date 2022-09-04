@@ -13,8 +13,8 @@ Game::Game(SceneManager* sm) : Scene(sm) {
             map[i][j] = new Tile(
                 GRASS,
                 NORMAL,
-                Rectangle{static_cast<float>(j * TILEWIDTH),
-                          static_cast<float>(i * TILEHEIGHT),
+                Rectangle{static_cast<float>(j * tileSize.x),
+                          static_cast<float>(i * tileSize.y),
                           _Default_Screen_Width / (_Default_MapWidth + 2),
                           _Default_Screen_Height / 7},
                 nullptr);

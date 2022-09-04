@@ -1,7 +1,11 @@
 EXEC := SyndicateZero.exe
 CC=g++
+VERSION_MAJOR=1
+VERSION_MINOR=2
+VERSION_PATCH=2
 RAYLIB_FLAGS=-lraylib -lopengl32 -lgdi32 -lwinmm -DPLATFORM_DESKTOP
-CCFLAGS=-std=c++17 -D_DEFAULT_SOURCE
+CCFLAGS=-std=c++17 -D_DEFAULT_SOURCE -DVERSION_MAJOR=$(VERSION_MAJOR) \
+	-DVERSION_MINOR=$(VERSION_MINOR) -DVERSION_PATCH=$(VERSION_PATCH)
 GameTools=$(wildcard src/GameTools/*.cpp)
 GameToolsObj=$(patsubst src/GameTools/%.cpp, build/GameTools/%.o, $(GameTools))
 GameObjects=$(wildcard src/GameObjects/*.cpp)
@@ -30,6 +34,9 @@ $(GameObjectsObj): build/GameObjects/%.o: src/GameObjects/%.cpp
 
 $(GameStatesObj): build/Scenes/%.o: src/Scenes/%.cpp
 	$(CC) -c $< -o $@ $(CCFLAGS)
+
+# build/release.res: src/release.rc
+# 	windres -i release.rc -o release.res
 
 clean:
 	@rm -f $(EXEC) $(GameObj) $(GameToolsObj) $(GameObjectsObj) $(GameStatesObj)

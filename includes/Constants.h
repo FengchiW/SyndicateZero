@@ -8,6 +8,23 @@
 #include <memory>
 #include "GameTools/Card.h"
 
+#ifndef VERSION_MAJOR
+#define VERSION_MAJOR 0
+#endif  // VERSION
+
+#ifndef VERSION_MINOR
+#define VERSION_MINOR 0
+#endif  // VERSION
+
+#ifndef VERSION_PATCH
+#define VERSION_PATCH 0
+#endif  // VERSION
+
+#define STRINGIZE2(s) #s
+#define STRINGIZE(s) STRINGIZE2(s)
+#define VERSION_STRING "v" STRINGIZE(VERSION_MAJOR) \
+    "." STRINGIZE(VERSION_MINOR) "." STRINGIZE(VERSION_PATCH)
+
 // Named mapCoord since its between 0 and 65535
 typedef unsigned short mapCoord;  // NOLINT
 typedef unsigned short ushort;  // NOLINT

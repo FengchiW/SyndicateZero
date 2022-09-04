@@ -4,6 +4,26 @@
 #include <utility>
 #include "../../includes/Scenes/SceneManager.h"
 
+void SceneManager::logMessage(const std::string& message) {
+    consoleMessages.push_back(message);
+}
+
+void SceneManager::logError(const std::string& message) {
+    consoleMessages.push_back("ERROR: " + message);
+}
+
+void SceneManager::logWarning(const std::string& message) {
+    consoleMessages.push_back("WARNING: " + message);
+}
+
+void SceneManager::clearLog() {
+    consoleMessages.clear();
+}
+
+StrList SceneManager::getConsoleMessages() const {
+    return consoleMessages;
+}
+
 void SceneManager::push(std::unique_ptr<Scene> scene) {
     Action action;
     consoleMessages.push_back("LOG: SCENE PUSH ACTION");
