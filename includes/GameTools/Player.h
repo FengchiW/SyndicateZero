@@ -13,7 +13,7 @@
 // Card class
 class Player {
  public:
-    Player();
+    Player(std::string name, int health, int mana);
 
     // Actions
     void drawCard();
@@ -28,9 +28,9 @@ class Player {
     void setDeck(std::stack<std::unique_ptr<Card>> deck);
 
  private:
-    std::string name;
-    int health;
-    int mana;
+    std::string name {};
+    int health {};
+    int mana {};
     std::stack<std::unique_ptr<Card>> deck;
     std::vector<std::unique_ptr<Card>> graveyard;
     std::vector<std::unique_ptr<Card>> hand;

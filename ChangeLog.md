@@ -129,6 +129,7 @@ Post Version 1.1.5, this project adheres to [Semantic Versioning](https://semver
     - Player Class to house the player objects
     - Added setters and getters to the player class
     - A Main Menu
+    - RapidJSON library to read write player data
   ### Fixed
     - So issues with debug menu not displaying
   ### Changed

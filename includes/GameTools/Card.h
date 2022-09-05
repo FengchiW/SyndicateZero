@@ -5,6 +5,7 @@
 #include "Types.h"
 #include <raylib.h>
 #include <string>
+#include <memory>
 
 // Card class
 class Card {
@@ -24,5 +25,7 @@ class Card {
     std::string description;
     Texture2D CardTexture;
 };
+
+std::unique_ptr<Card> readCard(std::string filename);
 
 #endif  // INCLUDES_GAMETOOLS_CARD_H_
