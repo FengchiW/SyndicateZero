@@ -4,6 +4,7 @@
 #include "../../includes/Scenes/Game.h"
 #include "../../includes/GameTools/Tile.h"
 #include "../../includes/GameTools/Card.h"
+#include "../../includes/GameTools/Types.h"
 #include "../../includes/Constants.h"
 
 Game::Game(SceneManager* sm) : Scene(sm) {
@@ -20,6 +21,17 @@ Game::Game(SceneManager* sm) : Scene(sm) {
                 nullptr);
         }
     }
+
+    // initialize player
+    players[0] = Player("Player", 100, 100);
+    players[1] = Player("Enemy", 100, 100);
+
+    // Dumb Texture
+    Texture2D LoadTexture(const char *fileName);  
+
+    // initialize cards
+    // Hardcoded for now
+
 }
 
 void Game::draw() {
