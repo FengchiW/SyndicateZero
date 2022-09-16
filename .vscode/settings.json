@@ -4,8 +4,10 @@
         "GAMETOOLS",
         "INDECK",
         "MAPWIDTH",
+        "rapidjson",
         "Raylib",
         "SCENEMANAGER",
+        "STRINGIZE",
         "TILEHEIGHT",
         "TILEWIDTH",
         "YYMDD"
@@ -62,7 +64,10 @@
         "ostream": "cpp",
         "stdexcept": "cpp",
         "streambuf": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "map": "cpp",
+        "iostream": "cpp",
+        "istream": "cpp"
     },
     "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
         "clang-diagnostic-error",

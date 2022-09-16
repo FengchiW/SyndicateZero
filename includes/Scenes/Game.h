@@ -26,9 +26,7 @@ class Game final : public Scene {
  private:
     Tile* map[_Default_MapHeight]
              [_Default_MapWidth] = {};
-    Vector2 mousePos;
     unsigned int turn{0};
-    bool hasMouseMoved{false};
     Player players[2] {Player("Player 1", 20, 10),
                        Player("Alan", 20, 10)};
     mapCoord2 tileSize {_Default_Screen_Width / (_Default_MapWidth + 2),

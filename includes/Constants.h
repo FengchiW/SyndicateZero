@@ -6,7 +6,6 @@
 #include <vector>
 #include <string>
 #include <memory>
-#include "GameTools/Card.h"
 
 #ifndef VERSION_MAJOR
 #define VERSION_MAJOR 0
@@ -29,15 +28,16 @@
 typedef unsigned short mapCoord;  // NOLINT
 typedef unsigned short ushort;  // NOLINT
 typedef std::vector<std::string> StrList;
-typedef std::unique_ptr<Card> Cardpointer;
+
 typedef struct mapCoord2 {
     mapCoord x;
     mapCoord y;
 } mapCoord2;
 
+#define UNDEFINED                (static_cast<ushort>(65535))
 #define _Default_Screen_Width    (static_cast<ushort>(1200))
 #define _Default_Screen_Height   (static_cast<ushort>(600))
 #define _Default_MapWidth        (static_cast<mapCoord>(10))
-#define _Default_MapHeight       (static_cast<mapCoord>(4))
+#define _Default_MapHeight       (static_cast<mapCoord>(5))
 
 #endif  // INCLUDES_CONSTANTS_H_

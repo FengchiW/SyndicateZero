@@ -28,6 +28,7 @@ enum UnitType {
 };
 
 enum CardStates {
+    IN_HAND,
     INDECK,
     DISPLAYED,
     DISABLED,

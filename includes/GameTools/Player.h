@@ -13,27 +13,21 @@
 // Card class
 class Player {
  public:
+    // Constructor
     Player(std::string name, int health, int mana);
 
     // Actions
     void drawCard();
-    std::unique_ptr<Card> playCard(int index);
     // void discardCard(std::unique_ptr<Card> card);
 
-    // Getters
-    std::vector<std::unique_ptr<Card>> getHand();
-    std::vector<std::unique_ptr<Card>> getGraveyard();
-
-    // Setters
-    void setDeck(std::stack<std::unique_ptr<Card>> deck);
+    std::stack<std::unique_ptr<Card>> deck;
+    std::vector<std::unique_ptr<Card>> graveyard;
+    std::vector<std::unique_ptr<Card>> hand;
 
  private:
     std::string name {};
     int health {};
     int mana {};
-    std::stack<std::unique_ptr<Card>> deck;
-    std::vector<std::unique_ptr<Card>> graveyard;
-    std::vector<std::unique_ptr<Card>> hand;
 };
 
 #endif  // INCLUDES_GAMETOOLS_PLAYER_H_

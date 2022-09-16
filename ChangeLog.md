@@ -135,3 +135,26 @@ Post Version 1.1.5, this project adheres to [Semantic Versioning](https://semver
   ### Changed
     - How debug messages are logged into the console
     - Modified the make file so it now sets the version for the game
+
+## [1.2.2] - 2022-09-09
+  ### Added
+    - Added the environment files
+    - Added a method to read unit files
+    - Added a rectangle to the card class
+    - Added the card into the world
+    - Added the ability to select cards
+  ### Fixed 
+    - Rapid json loading for the card
+    - Many issues relating to the unique pointers for the player object
+  ### Changed
+    - Changed how the unit and card classes function
+    - How a bunch of memory management is handled
+    - Moved input handling out of update loop into HandleInput
+
+## [1.2.4] - 2022-09-15
+  ### Added
+    -
+  ### Fixed 
+    -
+  ### Changed
+    -
