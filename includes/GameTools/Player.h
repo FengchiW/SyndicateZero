@@ -24,10 +24,14 @@ class Player {
     std::vector<std::unique_ptr<Card>> graveyard;
     std::vector<std::unique_ptr<Card>> hand;
 
- private:
-    std::string name {};
     int health {};
     int mana {};
+
+    // getters
+    std::string getName() const { return name; }
+
+ private:
+    std::string name {};
 };
 
 #endif  // INCLUDES_GAMETOOLS_PLAYER_H_

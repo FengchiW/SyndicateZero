@@ -4,7 +4,7 @@ VERSION_MAJOR=1
 VERSION_MINOR=2
 VERSION_PATCH=4
 RAYLIB_FLAGS=-lraylib -lopengl32 -lgdi32 -lwinmm -DPLATFORM_DESKTOP
-CCFLAGS=-std=c++17 -D_DEFAULT_SOURCE -DVERSION_MAJOR=$(VERSION_MAJOR) \
+CCFLAGS=-std=c++20 -D_DEFAULT_SOURCE -DVERSION_MAJOR=$(VERSION_MAJOR) \
 	-DVERSION_MINOR=$(VERSION_MINOR) -DVERSION_PATCH=$(VERSION_PATCH)
 GameTools=$(wildcard src/GameTools/*.cpp)
 GameToolsObj=$(patsubst src/GameTools/%.cpp, build/GameTools/%.o, $(GameTools))

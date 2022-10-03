@@ -8,12 +8,19 @@
 #include <memory>
 #include <stack>
 #include <vector>
+#include <string>
 #include "SceneManager.h"
 #include "../GameTools/Card.h"
 #include "../GameTools/Tile.h"
 #include "../GameTools/Types.h"
 #include "../Constants.h"
 #include "../GameTools/Player.h"
+
+enum GamePhase {
+    BEGIN,
+    ACTION,
+    END
+};
 
 class Game final : public Scene {
  public:
@@ -23,6 +30,9 @@ class Game final : public Scene {
     void draw() override;
     void update(const float dt) override;
     void HandleInput() override;
+
+    void endTurn();
+    std::string phaseToString(GamePhase phase);
  private:
     Tile* map[_Default_MapHeight]
              [_Default_MapWidth] = {};
@@ -32,6 +42,10 @@ class Game final : public Scene {
     mapCoord2 tileSize {_Default_Screen_Width / (_Default_MapWidth + 2),
                         _Default_Screen_Height / 7};
     mapCoord2 mapSize {_Default_MapWidth, _Default_MapHeight};
+    GamePhase phase {BEGIN};
+    Rectangle endTurnButton {static_cast<float>(_Default_Screen_Width - 200),
+                             static_cast<float>(_Default_Screen_Height - 100),
+                             200, 100};
 };
 
 #endif  // INCLUDES_SCENES_GAME_H_
