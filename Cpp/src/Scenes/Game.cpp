@@ -37,7 +37,9 @@ Game::Game(SceneManager *sm) : Scene(sm) {
 
   // draw the card
   players[0].drawCard();
-  players[0].drawCard();
+
+  // initialize players
+  players[0].mana = turn;
 }
 
 void Game::draw() {
@@ -53,9 +55,23 @@ void Game::draw() {
         break;
       }
 
-      if (map[i][j]->status == HOVERED) {
+      switch (map[i][j]->status) {
+      case NORMAL:
+        break;
+      case HIGHLIGHTED:
+        DrawRectangleRec(map[i][j]->rect, BLUE);
+        break;
+      case HOVERED:
         DrawRectangleRec(map[i][j]->rect, Color{255, 0, 0, 100});
+        break;
+      default:
+        break;
       }
+
+      // draw units on the tile
+      // if (map[i][j]->card != nullptr) {
+      //   DrawRectangleRec(map[i][j]->card->rect, map[i][j]->card->color);
+      // }
     }
   }
 
@@ -148,6 +164,10 @@ void Game::endTurn() {
   // end the current phase
   switch (phase) {
   case BEGIN:
+    // mana is reset at the beginning of the turn
+    players[0].mana = turn;
+    // Maybe drawing cards will cost mana?
+    players[0].drawCard();
     phase = ACTION;
     break;
   case ACTION:
@@ -155,27 +175,28 @@ void Game::endTurn() {
     break;
   case END:
     phase = BEGIN;
+    // units are reset at the end of the turn
     turn++;
     break;
   default:
     break;
   }
-
-  // reset the player's mana
-  players[0].mana = turn;
-  // draw a card
-  players[0].drawCard();
 }
 
 void Game::HandleInput() {
   // mouse position
   Vector2 mousePos = GetMousePosition();
 
+
+  // mouse over map
   for (mapCoord i = 0; i < mapSize.y; i++) {
     for (mapCoord j = 0; j < mapSize.x; j++) {
       if (CheckCollisionPointRec(mousePos, map[i][j]->rect)) {
         // set the tile to hover
         map[i][j]->status = HOVERED;
+        if (userHoldingCard != -1) {
+          map[i][j]->status = HIGHLIGHTED;
+        }
       } else {
         // set the tile to normal
         map[i][j]->status = NORMAL;
@@ -202,9 +223,32 @@ void Game::HandleInput() {
       // end the turn
       endTurn();
     }
+
+    // check if spawning a unit
+    if (phase == BEGIN) {
+      // check if user is holding a card
+      if (userHoldingCard != -1) {
+        // if user is on a valid tile
+        for (mapCoord i = 0; i < mapSize.y; i++) {
+          for (mapCoord j = 0; j < mapSize.x; j++) {
+            if (map[i][j]->status == HIGHLIGHTED) {
+              // spawn the unit
+              map[i][j]->card = std::move(players[0].hand[userHoldingCard]);
+              // remove the card from the hand
+              players[0].hand.erase(players[0].hand.begin() + userHoldingCard);
+              // reset the userHoldingCard
+              userHoldingCard = -1;
+              // end the turn
+              endTurn();
+            }
+          }
+        }
+      }
+    }
+
     // check if mouse over any cards in hand
     int handSize = players[0].hand.size();
-    bool hasCardBeenSelected = false;
+    userHoldingCard = -1;
 
     for (int i = 0; i < handSize; i++) {
       players[0].hand[i]->isSelected = false;
@@ -212,9 +256,9 @@ void Game::HandleInput() {
                                  players[0].hand[i]->collisionBox)) {
         // set the card to hover
         players[0].hand[i]->isHovered = true;
-        if (!hasCardBeenSelected) {
+        if (userHoldingCard == -1) {
           players[0].hand[i]->isSelected = true;
-          hasCardBeenSelected = true;
+          userHoldingCard = i;
         } else {
           players[0].hand[i]->isSelected = false;
         }

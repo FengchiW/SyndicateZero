@@ -16,6 +16,7 @@ enum TileType {
 enum TileStatus {
     NORMAL,
     SELECTED,
+    HIGHLIGHTED,
     HOVERED,
     ATTACKED
 };

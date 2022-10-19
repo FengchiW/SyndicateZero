@@ -1,7 +1,14 @@
+# All
 build/
-res
-SyndicateZero.exe
-Todo.txt
-release.res
-obj
-includes/rapidjson
+
+# Cpp
+Cpp/includes/rapidjson
+
+# Python
+Python/venv
+Python/__pycache__
+Python/Include
+Python/Lib
+Python/res
+Python/Scripts
+Python/pyvenv.cfg

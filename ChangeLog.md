@@ -153,8 +153,4 @@ Post Version 1.1.5, this project adheres to [Semantic Versioning](https://semver
 
 ## [1.2.4] - 2022-09-15
   ### Added
-    -
-  ### Fixed 
-    -
-  ### Changed
-    -
+    - A Python version to simplify development

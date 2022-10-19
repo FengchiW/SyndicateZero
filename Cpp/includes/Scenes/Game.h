@@ -33,12 +33,13 @@ class Game final : public Scene {
 
     void endTurn();
     std::string phaseToString(GamePhase phase);
+
  private:
     Tile* map[_Default_MapHeight]
              [_Default_MapWidth] = {};
     unsigned int turn{0};
-    Player players[2] {Player("Player 1", 20, 10),
-                       Player("Alan", 20, 10)};
+    Player players[2] {Player("Player 1", 20, 0),
+                       Player("Alan", 20, 0)};
     mapCoord2 tileSize {_Default_Screen_Width / (_Default_MapWidth + 2),
                         _Default_Screen_Height / 7};
     mapCoord2 mapSize {_Default_MapWidth, _Default_MapHeight};
@@ -46,6 +47,7 @@ class Game final : public Scene {
     Rectangle endTurnButton {static_cast<float>(_Default_Screen_Width - 200),
                              static_cast<float>(_Default_Screen_Height - 100),
                              200, 100};
+    int userHoldingCard {-1};
 };
 
 #endif  // INCLUDES_SCENES_GAME_H_

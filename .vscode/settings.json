@@ -1,16 +1,17 @@
 {
     "cSpell.words": [
-        "currentmessage",
-        "GAMETOOLS",
-        "INDECK",
-        "MAPWIDTH",
-        "rapidjson",
-        "Raylib",
-        "SCENEMANAGER",
-        "STRINGIZE",
-        "TILEHEIGHT",
-        "TILEWIDTH",
-        "YYMDD"
+      "currentmessage",
+      "GAMETOOLS",
+      "INDECK",
+      "MAPWIDTH",
+      "pyray",
+      "rapidjson",
+      "Raylib",
+      "SCENEMANAGER",
+      "STRINGIZE",
+      "TILEHEIGHT",
+      "TILEWIDTH",
+      "YYMDD"
     ],
     "files.associations": {
         "xstring": "cpp",
@@ -76,5 +77,15 @@
         "clang-diagnostic-error",
         "clang-diagnostic-error",
         "clang-diagnostic-error"
-    ]
+    ],
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true,
+    "files.autoSave": "afterDelay",
+    "editor.tabSize": 2,
+    "files.exclude": {
+      "Cpp/includes/rapidjson": true,
+      "Python/Include": true,
+      "Python/Lib": true,
+      "Python/Scripts": true
+    }
 }
