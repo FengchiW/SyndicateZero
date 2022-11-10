@@ -1,101 +1,40 @@
 import pyray as pr
-from pyray import check_collision_point_rec as collision
-import json
-
 from .SceneManager import Scene
 
-# Constants
-SUMMON_PHASE = 0
-BATTLE_PHASE = 1
-END_PHASE = 2
-
-
-class Card():
-    def __init__(self, data) -> None:
-        self.cost = data["cost"]
-        self.name = data["name"]
-        self.description = data["description"]
-        self.type = data["type"]
-        self.attack = data["attack"]
-        self.maxHealth = data["maxHealth"]
-        self.health = data["health"]
-        self.range = data["range"]
-        self.movement = data["movement"]
-        self.remainingMovement = self.movement
-        # self.UnitImage = pr.load_texture(data["image"])
-        # self.CardImage = pr.load_texture(data["CardImage"])
-
-    def drawAsCard(self) -> None:
-        pass
-
-    def drawAsUnit(self) -> None:
-        pass
-
-
-def get_card_from_json(file) -> Card:
-    try:
-        with open(file, "r") as f:
-            return Card(json.load(f))
-    except FileNotFoundError:
-        print("File not found")
-        return None
-
-
-class Player():
-    def __init__(self) -> None:
-        self.hand = []
-        self.deck = []
-        self.units = []
-        self.graveyard = []
-
-    def drawCard(self):
-        if len(self.deck) > 0:
-            self.hand.append(self.deck.pop())
-
-    def summonCard(self, card, x, y):
-        pass
-
-    def moveUnit(self, unit, x, y):
-        pass
 
 class Tile():
-    def __init__(self, x: int, y: int, width: int, height: int) -> None:
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
+    def __init__(self, x: float, y: float, width: float, height: float) -> None:
+        self.rect = pr.Rectangle(x, y, width, height)
         self.isOccupied = False
         self.occupant = None
         self.hovered = False
 
     def draw(self) -> None:
         if self.hovered:
-            pr.draw_rectangle(int(self.x), int(self.y),
-                              int(self.width), int(self.height),
-                              (0, 255, 0, 255))
+            pr.draw_rectangle_rec(self.rect, (50, 255, 150, 255))
         else:
-            pr.draw_rectangle(int(self.x), int(self.y),
-                              int(self.width), int(self.height),
-                              (255, 255, 0, 255))
+            pr.draw_rectangle_rec(self.rect, (0, 200, 0, 255))
 
 
 class Game():
     def __init__(self, sw, sh) -> None:
         self.board = []
-        self.boardSize = (8, 4)
+        self.boardSize = (10, 4)
+        self.boardViewPortSize = (sw, (sh * 3) // 4)
         self.screenWidth = sw
         self.screenHeight = sh
         self.turn = 0
-        self.currentPhase = SUMMON_PHASE
+        self.currentPhase = 0
         self.players = []
 
+        # Create board
         for i in range(self.boardSize[0]):
             for j in range(self.boardSize[1]):
                 self.board.append(Tile(
-                    i * (self.screenWidth / self.boardSize[0]),
-                    j * (self.screenHeight / self.boardSize[1]),
-                    self.screenWidth / self.boardSize[0],
-                    self.screenHeight / self.boardSize[1]
+                    i * (self.boardViewPortSize[0] / self.boardSize[0]),
+                    j * (self.boardViewPortSize[1] / self.boardSize[1]),
+                    self.boardViewPortSize[0] / self.boardSize[0],
+                    self.boardViewPortSize[1] / self.boardSize[1]
                 ))
 
     def drawBoard(self):
@@ -103,14 +42,18 @@ class Game():
             tile.draw()
 
     def drawUI(self):
-        pass
+        for i in range(len(self.players[0].hand)):
+            pr.draw_rectangle(
+                0, i * (self.screenHeight / 10),
+                self.screenWidth / 10, self.screenHeight / 10,
+                (255, 255, 255, 255)
+            )
 
     def update(self, deltaTime: float) -> None:
+        mouse = pr.get_mouse_position()
         for tile in self.board:
-            # check hover
             tile.hovered = False
-            if collision(pr.get_mouse_position(),
-                         (tile.x, tile.y, tile.width, tile.height)):
+            if pr.check_collision_point_rec(mouse, tile.rect):
                 tile.hovered = True
 
     def draw(self):
@@ -119,7 +62,7 @@ class Game():
 
 class GameScene(Scene):
     def __init__(self, sm) -> None:
-        super().__init__(sm)
+        super().__init__(sm, "Game")
         self.screenWidth = pr.get_screen_width()
         self.screenHeight = pr.get_screen_height()
 
