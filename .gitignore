@@ -13,3 +13,7 @@ Python/res
 Python/Scripts
 Python/pyvenv.cfg
 Python/activate.bat
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
