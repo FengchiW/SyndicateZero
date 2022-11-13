@@ -7,26 +7,34 @@ Post Version 1.1.5, this project adheres to [Semantic Versioning](https://semver
 ## [Unreleased]
 
 ## [1.0.0] - 2022-08-16
-  ### General
+
+### General
+
     - Project started
     - Worked on the basic outline of the code
     - Added Raylib and setup the underlying game engine
     - Worked on conceptualizing the game
 
 ## [1.01.00] - 2022-08-17
-  ### General
+
+### General
+
     - Added the game loop
     - Finished the conceptualizing of the game
     - Began working on the actual game mechanics
     - Generated art for the game
 
 ## [1.02.00] - 2022-08-18
-  ### General
+
+### General
+
     - Started laying out the other scenes and the game mechanics
     - Continued working on the main game starting with a single level
 
 ## [1.03.00] - 2022-08-19
-  ### General
+
+### General
+
     - Last update before vacation
     - Going to make small progress with some basic game setup
     - Reworking some of the file structure
@@ -36,7 +44,9 @@ Post Version 1.1.5, this project adheres to [Semantic Versioning](https://semver
     - Added a hover effect to the tiles in the game [needs reworking]
 
 ## [1.04.22828X] - 2022-08-22
-  ### General
+
+### General
+
     - Updated how the rectangular grid is drawn, now the rectangles are inside the map object
     - Updated how tile hover is handled [in map obj]
     - Changed map obj to a tuple instead of a pair
@@ -51,7 +61,9 @@ Post Version 1.1.5, this project adheres to [Semantic Versioning](https://semver
     - Changed the way numbers work now MAJOR.MINOR[PUSH].YYMDD
 
 ## [1.1.5] - 2022-08-29
-  ### General
+
+### General
+
     - I don't like the versioning structure so I changed it again
     - New versions will be Major.Minor.[CommitNo]
     - Major will have large titles
@@ -64,7 +76,9 @@ Post Version 1.1.5, this project adheres to [Semantic Versioning](https://semver
     - Updated constants to predefine a list of strings
 
 ## [1.1.7] - 2022-08-29
-  ### General
+
+### General
+
     - [Personal] Got the project working on my secondary laptop
     - [Personal] Got c++ linter working on secondary laptop
     - [TODO] do the same on main laptop
@@ -75,14 +89,18 @@ Post Version 1.1.5, this project adheres to [Semantic Versioning](https://semver
     - Removed added include folders since it seems like the flags work Finished
       + This fixed some linking issues
     - Changed the way the debug is handled, it will now be a part of SceneManager which makes far more scenes
-    
+
 ## [1.1.8] - 2022-08-29
-  ### General
+
+### General
+
     - Fixed the issue with transition from screens forgot to update the screen manager
     - Did some stylistic clean up on the debug menu
 
 ## [1.1.9] - 2022-08-29
-  ### General
+
+### General
+
     - Added the res file to gitignore it shouldn't be There
     - Manually updated the resource file, some adjustment is needed here
     - [X] Changed the Card class to use unique pointers to the unit
@@ -90,67 +108,97 @@ Post Version 1.1.5, this project adheres to [Semantic Versioning](https://semver
     - Added the skeleton for the main menu
 
 ## [1.1.10] - 2022-09-02
-  ### Changed
+
+### Changed
+
     - Change int constants to definitions
     - Renamed the cardpointer definitions
     - Moved tilewidth and height out of constants file
     - Changed how the map height and width works
     - Once again changed the changelog and versioning to confide to the Sematic versioning standards
-  ### Removed
+
+### Removed
+
     - Removed the use of tuples since its not as needed
     - Removing the unused JSON file until I'm ready to deal with that
-  ### Added
+
+### Added
+
     - Added the destructor for Tile
     - Added default variables for each of the game's members
-  ### Fixed
+
+### Fixed
+
     - Type issues with the map int vs uint
 
 ## [1.2.0] - 2022-09-03
-  ### Changed
+
+### Changed
+
     - Changed some Type definitions to be typedefs instead of defines
     - Moved build tools to their own folder
     - Moved all the includes to their own folder
       + this broke all the dynamic imports
-  ### Fixed
+
+### Fixed
+
     - A lot of the statical imports
     - Continued to resolve lint errors
     - Fixed all the include issues
     - Changed the incorrect header guards
     - Fixed issues with symbol linking
-  ### Added
+
+### Added
+
     - New structure uint2 that has two uint position values
     - A make file to make compile times much faster and debugging easier
-  ### Deprecated
+
+### Deprecated
+
     - buildtools folder, both the packager and compile.bat
       + Packager will return but with different functionality
 
 ## [1.2.1] - 2022-09-04
-  ### Added
+
+### Added
+
     - Player Class to house the player objects
     - Added setters and getters to the player class
     - A Main Menu
     - RapidJSON library to read write player data
-  ### Fixed
+
+### Fixed
+
     - So issues with debug menu not displaying
-  ### Changed
+
+### Changed
+
     - How debug messages are logged into the console
     - Modified the make file so it now sets the version for the game
 
 ## [1.2.2] - 2022-09-09
-  ### Added
+
+### Added
+
     - Added the environment files
     - Added a method to read unit files
     - Added a rectangle to the card class
     - Added the card into the world
     - Added the ability to select cards
-  ### Fixed 
+
+### Fixed
+
     - Rapid json loading for the card
     - Many issues relating to the unique pointers for the player object
-  ### Changed
+
+### Changed
+
     - Changed how the unit and card classes function
     - How a bunch of memory management is handled
     - Moved input handling out of update loop into HandleInput
 
 ## [1.2.4] - 2022-09-15
-  ### Added
+
+### Added
+
     - A Python version to simplify development

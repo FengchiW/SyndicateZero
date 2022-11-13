@@ -1,12 +1,16 @@
 import pyray as pr
+import json
+from .SceneManager import SceneManager
 
 
 class ResourceManager():
-    def __init__(self):
+    def __init__(self, sm):
         self.textures: dict(str, pr.Texture) = {}
         self.sounds = {}
         self.music = {}
         self.fonts = {}
+        self.locales = {}
+        self.sceneManager: SceneManager = sm
 
     def load_texture(self, path: str) -> pr.Texture:
         if path not in self.textures:
@@ -29,6 +33,14 @@ class ResourceManager():
         if size not in self.fonts[path]:
             self.fonts[path][size] = pr.load_font(path, size)
         return self.fonts[path][size]
+    
+    def load_locales(self, path: str):
+        if path not in self.locales:
+            try:
+                self.locales[path] = json.loads(pr.load_file_text(path))
+            except json.JSONDecodeError:
+                self.sceneManager.logMessage("Failed to load locale!", 2)
+        return self.locales[path]
 
     def unload_texture(self, path: str):
         if path in self.textures:
