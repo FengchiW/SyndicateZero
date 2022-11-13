@@ -1,8 +1,8 @@
 import pyray as pr
 
 from .LeaderSelect import LeaderSelectScene
-from .SceneManager import Scene, SceneManager
-from .util import Button
+from ..SceneManager import Scene, SceneManager
+from ..util import Button
 
 
 class MainMenu(Scene):

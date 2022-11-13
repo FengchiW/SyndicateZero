@@ -1,5 +1,4 @@
-import pyray as pr
-from .SceneManager import Scene, SceneManager
+from ..SceneManager import Scene, SceneManager
 
 class IntroScene(Scene):
     def __init__(self, sm: SceneManager) -> None:

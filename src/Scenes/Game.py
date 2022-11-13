@@ -1,5 +1,5 @@
 import pyray as pr
-from .SceneManager import Scene
+from ..SceneManager import SceneManager, Scene
 
 
 class Tile():
@@ -61,7 +61,7 @@ class Game():
 
 
 class GameScene(Scene):
-    def __init__(self, sm) -> None:
+    def __init__(self, sm: SceneManager) -> None:
         super().__init__(sm, "Game")
         self.screenWidth = pr.get_screen_width()
         self.screenHeight = pr.get_screen_height()

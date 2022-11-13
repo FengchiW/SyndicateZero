@@ -224,3 +224,4 @@ Post Version 1.1.5, this project adheres to [Semantic Versioning](https://semver
 ### Todo
     - Move C++ version outside of current branch so that the code is more clean
     - Redesign how the card and unit system works
+## [1.0.1] - 2022-11-13### Added  - Added an auto Updating tool### Fixed  - Fixed all the python importing issues caused by the refactor### Removed  - Removed all legacy Cpp code and workspace configurations

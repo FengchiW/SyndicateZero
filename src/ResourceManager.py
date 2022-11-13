@@ -1,16 +1,14 @@
 import pyray as pr
 import json
-from .SceneManager import SceneManager
 
 
 class ResourceManager():
-    def __init__(self, sm):
+    def __init__(self):
         self.textures: dict(str, pr.Texture) = {}
         self.sounds = {}
         self.music = {}
         self.fonts = {}
         self.locales = {}
-        self.sceneManager: SceneManager = sm
 
     def load_texture(self, path: str) -> pr.Texture:
         if path not in self.textures:
@@ -33,7 +31,7 @@ class ResourceManager():
         if size not in self.fonts[path]:
             self.fonts[path][size] = pr.load_font(path, size)
         return self.fonts[path][size]
-    
+
     def load_locales(self, path: str):
         if path not in self.locales:
             try:

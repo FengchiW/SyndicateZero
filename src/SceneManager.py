@@ -37,7 +37,7 @@ class SceneManager:
         self.consoleRect: pr.Rectangle = pr.Rectangle(0, 0, 0, 0)
         self.debug: bool = False
         self.shouldExit: bool = False
-        self.rm: rm = rm(self)
+        self.rm: rm = rm()
 
     def pushScene(self, scene: Scene) -> None:
         self.logMessage(f"Entering {scene}")

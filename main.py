@@ -1,4 +1,5 @@
-from src import SceneManager, MainMenu
+from src import SceneManager
+from src.Scenes.MainMenu import MainMenu
 import pyray as pr
 
 

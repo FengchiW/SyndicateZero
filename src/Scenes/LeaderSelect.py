@@ -1,6 +1,6 @@
-from .SceneManager import Scene
+from ..SceneManager import Scene
+from ..util import Button
 from .Game import GameScene
-from .util import Button
 import pyray as pr
 
 

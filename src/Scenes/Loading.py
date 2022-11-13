@@ -1,4 +1,4 @@
-from .SceneManager import Scene
+from ..SceneManager import Scene
 
 
 class LoadingScene(Scene):
