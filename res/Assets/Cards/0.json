@@ -1,9 +1,21 @@
 {
+    "ID" : "1",
     "name" : "Warrior",
-    "description": "Temp",
-    "attack":1,
-    "health":1,
-    "speed":1,
-    "range":1,
-    "type":1
+    "description" : "A warrior is a person engaged or experienced in warfare or combat, especially within the context of a tribal or clan-based warrior culture society that recognizes a separate warrior class or caste. A warrior is one who is or has been engaged in warfare or combat.",
+    "attack" : 1,
+    "health" : 1,
+    "range" : 1,
+    "cost" : 1,
+    "speed" : 1,
+    "type" : 0,
+    "rarity" : "common",
+    "abilities" : [
+        {
+            "name" : "Charge",
+            "description" : "Charge is a combat ability that allows a unit to move through enemy units and attack them on the same turn. Charge is a basic ability that all units have.",
+            "type" : "charge"
+        }
+    ],
+    "image" : "warrior.png",
+    "card-image" : "warrior-card.png"
 }

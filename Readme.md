@@ -1,3 +1,5 @@
-# Development
+# Syndicate Zero
 
-In python you will need to copy the res file in build to the python folder
+Python Version
+ Slower but really good for demo and proof of concept
+ 
