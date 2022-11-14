@@ -200,28 +200,67 @@ Post Version 1.1.5, this project adheres to [Semantic Versioning](https://semver
 ## [1.2.4] - 2022-09-15
 
 ### Added
+
     - A Python version to simplify development
 
-
 ## [1.3.0] - 2022-11-13
+
 ### Added
+
     - New scenes, selections for leaders
     - New backgrounds for the main menu
     - New resource manager so that in the future I can implement some loading logic
     - New way of handling debugging
+
 ### Changed
+
     - Almost everything about the file structure
     - Setting up code for future improvements
+
 ### Enhancements
+
     - Added stronger typing hints for some of the classes
     - Improved code readability
     - Improved the button class so it can be used in more places
+
 ### Fixed
+
     - Many bugs pertaining to the configuration of the Python env
     - The gapping issue with the tile rectangles for the game map
+
 ### Removed
+
     - Removed the current way Cards and Units are implemented
+
 ### Todo
+
     - Move C++ version outside of current branch so that the code is more clean
     - Redesign how the card and unit system works
-## [1.0.1] - 2022-11-13### Added  - Added an auto Updating tool### Fixed  - Fixed all the python importing issues caused by the refactor### Removed  - Removed all legacy Cpp code and workspace configurations
+
+## [1.0.1] - 2022-11-13
+
+### Added
+
+    - Added an auto Updating tool
+
+### Fixed
+
+    - Fixed all the python importing issues caused by the refactor
+
+### Removed
+
+    - Removed all legacy Cpp code and workspace configurations
+
+### Changed
+
+    - Restarted the versioning system for the python builds!## [1.1.0] - 2022-11-13
+### Added
+  - Added Units back in
+  - Added Phases in
+  - Added basic movement system for units
+### Changed
+  - Changed file structure again
+### Fixed
+  - Fixed bug with movement calculation
+### Removed
+  - Removed some more junk from code

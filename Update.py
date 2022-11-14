@@ -15,6 +15,12 @@ def main():
             currentData["version"]["patch"] = 0
         else:
             currentData["version"]["patch"] += 1
+        
+        shouldUpdateRemote = input("Should the remote be updated? (y/n): ")
+        if shouldUpdateRemote == "y":
+            shouldUpdateRemote = True
+        else:
+            shouldUpdateRemote = False
 
         changeMessage = ""
 
@@ -56,36 +62,37 @@ def main():
         # write the changes to the changelog
         with open("CHANGELOG.md", "a") as f:
             # append change to end
-            f.write(f"## [{versionAsString}] - {currentData['lastChange']}")
+            f.write(f"## [{versionAsString}] - {currentData['lastChange']}\n")
 
             if (len(addedChanges) > 0):
-                f.write("### Added")
+                f.write("### Added\n")
                 for change in addedChanges:
-                    f.write(f"  - {change}")
+                    f.write(f"  - {change}\n")
 
             if (len(changedChanges) > 0):
-                f.write("### Changed")
+                f.write("### Changed\n")
                 for change in changedChanges:
-                    f.write(f"  - {change}")
+                    f.write(f"  - {change}\n")
 
             if (len(fixedChanges) > 0):
-                f.write("### Fixed")
+                f.write("### Fixed\n")
                 for change in fixedChanges:
-                    f.write(f"  - {change}")
+                    f.write(f"  - {change}\n")
 
             if (len(removedChanges) > 0):
-                f.write("### Removed")
+                f.write("### Removed\n")
                 for change in removedChanges:
-                    f.write(f"  - {change}")
+                    f.write(f"  - {change}\n")
 
         # write the new version to the package.json file
         with open("package.json", "w") as f:
             json.dump(currentData, f, indent=2)
 
-        changeMessage = f"v{versionAsString} - {currentData['lastChange']}"
-        os.system("git add .")
-        os.system(f"git commit -m \"{changeMessage}\"")
-        os.system("git push")
+        if shouldUpdateRemote:
+            changeMessage = f"v{versionAsString} - {currentData['lastChange']}"
+            os.system("git add .")
+            os.system(f"git commit -m \"{changeMessage}\"")
+            os.system("git push")
 
 
 if __name__ == "__main__":
