@@ -6,11 +6,11 @@ class IntroScene(Scene):
         super().__init__(sm)
         sm.rm.load_locales()
 
-    def update(self, deltaTime: float) -> None:
+    async def update(self, deltaTime: float) -> None:
         super().update(deltaTime)
 
-    def draw(self) -> None:
+    async def draw(self) -> None:
         super().draw()
 
-    def handle_input(self) -> None:
+    async def handle_input(self) -> None:
         super().handle_input()

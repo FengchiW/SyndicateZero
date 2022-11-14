@@ -163,14 +163,14 @@ class GameScene(Scene):
 
         self.game = Game(self.screenWidth, self.screenHeight)
 
-    def update(self, deltaTime: float) -> None:
-        super().update(deltaTime)
+    async def update(self, deltaTime: float) -> None:
+        await super().update(deltaTime)
         self.game.update(deltaTime)
 
-    def draw(self) -> None:
-        super().draw()
+    async def draw(self) -> None:
+        await super().draw()
         self.game.draw()
 
-    def handle_input(self) -> None:
-        super().handle_input()
+    async def handle_input(self) -> None:
+        await super().handle_input()
         self.game.handle_input()

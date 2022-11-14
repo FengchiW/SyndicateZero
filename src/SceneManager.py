@@ -7,13 +7,13 @@ class Scene:
         self._sm = sceneManager
         self.name = name
 
-    def update(self, deltaTime: float) -> None:
+    async def update(self, deltaTime: float) -> None:
         pass
 
-    def draw(self) -> None:
+    async def draw(self) -> None:
         pass
 
-    def handle_input(self) -> None:
+    async def handle_input(self) -> None:
         if (pr.is_key_pressed(pr.KEY_BACKSLASH)):
             sw = pr.get_screen_width()
             sh = pr.get_screen_height()

@@ -62,7 +62,7 @@ def main():
         # write the changes to the changelog
         with open("CHANGELOG.md", "a") as f:
             # append change to end
-            f.write(f"## [{versionAsString}] - {currentData['lastChange']}\n")
+            f.write(f"\n\n## [{versionAsString}] - {currentData['lastChange']}\n")
 
             if (len(addedChanges) > 0):
                 f.write("### Added\n")
