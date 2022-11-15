@@ -6,11 +6,11 @@ class LoadingScene(Scene):
         super().__init__(sm)
         sm.rm.load_resources(resources)
 
-    async def update(self, deltaTime: float) -> None:
-        await super().update(deltaTime)
+    def update(self, deltaTime: float) -> None:
+        super().update(deltaTime)
 
-    async def draw(self) -> None:
-        await super().draw()
+    def draw(self) -> None:
+        super().draw()
 
-    async def handle_input(self) -> None:
-        await super().handle_input()
+    def handle_input(self) -> None:
+        super().handle_input()

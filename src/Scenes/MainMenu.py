@@ -35,17 +35,17 @@ class MainMenu(Scene):
                    "Quit", lambda: self._sm.popScene())
         ]
 
-    async def update(self, deltaTime: float) -> None:
-        await super().update(deltaTime)
+    def update(self, deltaTime: float) -> None:
+        super().update(deltaTime)
 
-    async def draw(self) -> None:
-        await super().draw()
+    def draw(self) -> None:
+        super().draw()
         pr.draw_texture_ex(self.bg, (0, 0), 0, 1, (255, 255, 255, 255))
         for btn in self.buttons:
             btn.draw()
 
-    async def handle_input(self) -> None:
-        await super().handle_input()
+    def handle_input(self) -> None:
+        super().handle_input()
         mouse = pr.get_mouse_position()
         for btn in self.buttons:
             btn.handle_input(mouse)

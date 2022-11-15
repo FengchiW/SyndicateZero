@@ -2,6 +2,10 @@ import pyray as pr
 from ..SceneManager import SceneManager, Scene
 from ..util import Unit, Tile, summonUnit, Button
 import math
+import random
+from threading import Lock, Thread
+import time
+
 
 from pyray import check_collision_point_rec as checkCollision
 
@@ -46,7 +50,7 @@ class Game():
         self.selectedUnit = None
 
         self.endTurnButton = Button(sw - 200, sh - 50, 150, 50, "Next Phase",
-                                    lambda: self.endTurn())
+                                    lambda: self.triggerEndTurn())
 
         # Create board
         boardViewPortSize: tuple(int, int) = (sw, (sh * 3) // 4)
@@ -60,20 +64,49 @@ class Game():
                                i * (boardViewPortSize[1] / BOARD_HEIGHT))
                 ))
 
+    def triggerEndTurn(self):
+        t = Thread(target=self.endTurn)
+        t.start()
+
     def endTurn(self):
         if self.currentPhase == "Summon":
             for unit in self.units:
                 if unit.player == 0:
-                    unit.moves = 2
+                    unit.update()
             self.currentPhase = "Move"
             self.endTurnButton.text = "End Turn"
         elif self.currentPhase == "Move":
+            for unit in self.units:
+                if unit.player == 1:
+                    unit.update()
             self.endTurnButton.text = "Waiting..."
+            self.endTurnButton.isDisabled = True
             self.currentPhase = "Enemy Summon"
+            summoningSquares = [self.board[9],
+                                self.board[19], self.board[29], self.board[39]]
+            tile = random.choice(summoningSquares)
+            self.units.append(Unit(4, 1, 2, "warrior",
+                                   pr.Vector2(tile.rect.x, tile.rect.y),
+                                   tile.rect.width, tile.rect.height, tile, 1))
+            if (not summonUnit(self.units[-1], tile)):
+                self.units.pop()
+            # TODO: Remove this delay infavor of a real AI
+            time.sleep(1)
+            self.endTurn()
         elif self.currentPhase == "Enemy Summon":
             self.currentPhase = "Enemy Move"
+            for unit in self.units:
+                if unit.player == 1:
+                    randomLegalMove = random.choice(self.board)
+                    while (not canMoveToTile(unit, randomLegalMove)):
+                        randomLegalMove = random.choice(self.board)
+                    moveUnitToTile(unit, randomLegalMove, unit.tile)
+            # TODO: Remove this delay infavor of a real AI
+            time.sleep(1)
+            self.endTurn()
         else:
             self.currentPhase = "Summon"
+            self.endTurnButton.isDisabled = False
             self.endTurnButton.text = "Next Phase"
             self.turn += 1
 
@@ -163,14 +196,14 @@ class GameScene(Scene):
 
         self.game = Game(self.screenWidth, self.screenHeight)
 
-    async def update(self, deltaTime: float) -> None:
-        await super().update(deltaTime)
+    def update(self, deltaTime: float) -> None:
+        super().update(deltaTime)
         self.game.update(deltaTime)
 
-    async def draw(self) -> None:
-        await super().draw()
+    def draw(self) -> None:
+        super().draw()
         self.game.draw()
 
-    async def handle_input(self) -> None:
-        await super().handle_input()
+    def handle_input(self) -> None:
+        super().handle_input()
         self.game.handle_input()

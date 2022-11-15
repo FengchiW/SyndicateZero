@@ -9,19 +9,55 @@ def main():
     with open("package.json", "r") as f:
         currentData = json.load(f)
 
+        # parse version Major.Minor.Patch.Build
+        version = currentData["version"].split(".")
+        major = int(version[0])
+        minor = int(version[1])
+        patch = int(version[2])
+        build = int(version[3])
+
         isMinorUpdate = input("Is this a minor update? (y/n): ")
         if isMinorUpdate == "y":
-            currentData["version"]["minor"] += 1
-            currentData["version"]["patch"] = 0
+            minor += 1
+            patch = 0
         else:
-            currentData["version"]["patch"] += 1
-        
+            patch += 1
+
         shouldUpdateRemote = input("Should the remote be updated? (y/n): ")
         if shouldUpdateRemote == "y":
             shouldUpdateRemote = True
         else:
             shouldUpdateRemote = False
 
+        shouldDoBuild = 'n'
+        if isMinorUpdate == "y":
+            shouldDoBuild = "y"
+        else:
+            shouldDoBuild = input("Should a build be made? (y/n): ")
+        if shouldDoBuild == "y":
+            nuitkaFlags = ["--onefile",
+                           "--output-dir=build",
+                           "--windows-disable-console",
+                           "--windows-icon-from-ico=res/icon.ico"]
+            flagsStr = " ".join(nuitkaFlags)
+            os.system(f"python -m nuitka {flagsStr} main.py")
+            # check if build/prod exists
+            if not os.path.exists("build/prod"):
+                os.makedirs("build/prod")
+            # move the build to build/prod
+            os.system("mv build/main.exe build/prod")
+            # copy the resources to build/prod
+            os.system("cp -r res build/prod")
+            # zip resources and executable
+            build += 1
+            versionAsString = f"{major}.{minor}.{patch}.{build}"
+            zipName = f"build/SZ-{versionAsString}.zip"
+            execPath = "build/prod/main.exe"
+            resPath = "build/prod/res"
+            os.system(
+                f"zip -r {zipName} {execPath} {resPath}")
+
+        versionAsString = f"{major}.{minor}.{patch}.{build}"
         changeMessage = ""
 
         addedChanges = []
@@ -56,13 +92,11 @@ def main():
         now = datetime.datetime.now()
         currentData["lastChange"] = now.strftime("%Y-%m-%d")
 
-        versionAsString = f"{currentData['version']['major']}."
-        versionAsString += f"{currentData['version']['minor']}."
-        versionAsString += f"{currentData['version']['patch']}"
         # write the changes to the changelog
         with open("CHANGELOG.md", "a") as f:
             # append change to end
-            f.write(f"\n\n## [{versionAsString}] - {currentData['lastChange']}\n")
+            f.write(
+                f"\n\n## [{versionAsString}] - {currentData['lastChange']}\n")
 
             if (len(addedChanges) > 0):
                 f.write("### Added\n")

@@ -253,14 +253,54 @@ Post Version 1.1.5, this project adheres to [Semantic Versioning](https://semver
 
 ### Changed
 
-    - Restarted the versioning system for the python builds!## [1.1.0] - 2022-11-13
+    - Restarted the versioning system for the python builds!
+
+## [1.1.0] - 2022-11-13
+
 ### Added
-  - Added Units back in
-  - Added Phases in
-  - Added basic movement system for units
+
+- Added Units back in
+- Added Phases in
+- Added basic movement system for units
+
 ### Changed
-  - Changed file structure again
+
+- Changed file structure again
+
 ### Fixed
-  - Fixed bug with movement calculation
+
+- Fixed bug with movement calculation
+
 ### Removed
-  - Removed some more junk from code
+
+- Removed some more junk from code
+
+## [1.2.1.1] - 2022-11-14
+
+### Added
+
+- Tool to the updater to produce builds
+
+### Removed
+
+- Removed the unused gitignore rules
+
+## [1.2.2.0] - 2022-11-14
+
+### Changed
+
+- Moved output build into its own place under builds
+
+
+## [1.2.3.1] - 2022-11-14
+### Changed
+  - Updated the updater again fixed several bugs
+
+
+## [1.3.0.1] - 2022-11-14
+### Added
+  - Added new threading system to the AI so it doesn't freeze the game
+### Fixed
+  - Fixed issues with call back and buttons
+### Removed
+  - Removed all asyncronous functionallity of the game

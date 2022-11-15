@@ -2,10 +2,9 @@ from src import SceneManager
 from src.Scenes.MainMenu import MainMenu
 import pyray as pr
 from src import Constants
-import asyncio
 
 
-async def main():
+def main():
     pr.init_window(Constants.DEFAULT_SCREEN_WIDTH,
                    Constants.DEFAULT_SCREEN_HEIGHT, "Syndicate Zero")
     pr.set_target_fps(120)
@@ -18,9 +17,9 @@ async def main():
         pr.begin_drawing()
         pr.clear_background((255, 255, 255, 255))
         currentScene = sm.scenes[-1]
-        await currentScene.update(pr.get_frame_time())
-        await currentScene.draw()
-        await currentScene.handle_input()
+        currentScene.update(pr.get_frame_time())
+        currentScene.draw()
+        currentScene.handle_input()
         if sm.debug:
             pr.draw_rectangle_rec(sm.consoleRect, (0, 0, 0, 200))
             pr.draw_fps(20, 10)
@@ -39,4 +38,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

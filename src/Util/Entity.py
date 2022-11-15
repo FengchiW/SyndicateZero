@@ -31,13 +31,18 @@ class Unit(Entity):
         self.speed:     int = speed
         self.type:      int = unitType
         self.moves:     int = speed
-        self.player:    int = 0
+        self.player:    int = player
 
         self.textLength: int = pr.measure_text(self.type, 20)
 
     def draw(self):
         super().draw()
-        pr.draw_rectangle_rec(self.rect, (255, 0, 0, 255))
+        color = (0, 0, 0, 255)
+        if (self.player == 0):
+            color = (255, 0, 0, 255)
+        else:
+            color = (0, 255, 255, 255)
+        pr.draw_rectangle_rec(self.rect, color)
         textX = self.rect.x + (self.rect.width // 2) - self.textLength // 2
         textY = self.rect.y + (self.rect.height // 2) - 10
         pr.draw_text(self.type, int(textX), int(textY), 20,

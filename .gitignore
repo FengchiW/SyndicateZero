@@ -4,16 +4,6 @@ build/
 # Cpp
 Cpp/includes/rapidjson
 
-# Python
-Python/venv
-Python/__pycache__
-Python/Include
-Python/Lib
-Python/res
-Python/Scripts
-Python/pyvenv.cfg
-Python/activate.bat
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
