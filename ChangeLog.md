@@ -304,3 +304,13 @@ Post Version 1.1.5, this project adheres to [Semantic Versioning](https://semver
   - Fixed issues with call back and buttons
 ### Removed
   - Removed all asyncronous functionallity of the game
+
+
+## [1.3.0.1] - 2022-11-20
+### Added
+  - Added a lot of new features to the gameplay system
+  - Added many type hints to improve code readabillity
+### Fixed
+  - Fixed many issues with imports
+### Removed
+  - Removed unneeded asyncronous code

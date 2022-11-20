@@ -1,24 +1,26 @@
 from ..SceneManager import Scene
 from ..util import Button
 from .Game import GameScene
+from ..SceneManager import SceneManager
 import pyray as pr
+from pyray import Color
 
 
 class LeaderSelectScene(Scene):
-    def __init__(self, sm) -> None:
+    def __init__(self, sm: SceneManager) -> None:
         super().__init__(sm)
-        self.title: str = "Select a Leader"
+        self.title:       str = "Select a Leader"
         self.titleLength: int = pr.measure_text(self.title, 50)
-        self.width: int = pr.get_screen_width()
-        self.height: int = pr.get_screen_height()
-        buttonHeight: int = self.height * 4 // 5
-        buttonWidth: int = self.width // 3 - 25
-        buttonY: int = self.height // 6
+        self.width:       int = pr.get_screen_width()
+        self.height:      int = pr.get_screen_height()
+        buttonHeight:     int = self.height * 4 // 5
+        buttonWidth:      int = self.width // 3 - 25
+        buttonY:          int = self.height // 6
 
         def getButtonX(i: int) -> int:
             return ((self.width - 25) * i // 3) - buttonWidth
 
-        self.buttons: list(Button) = [
+        self.buttons: list[Button] = [
             Button(getButtonX(1), buttonY, buttonWidth, buttonHeight,
                    "Daddy",
                    lambda: self._sm.changeScene(
@@ -43,7 +45,7 @@ class LeaderSelectScene(Scene):
     def draw(self) -> None:
         super().draw()
         pr.draw_text(self.title, self.width // 2 - self.titleLength // 2,
-                     25, 50, (0, 0, 0, 255))
+                     25, 50, Color(0, 0, 0, 255))
         for btn in self.buttons:
             btn.draw()
 

@@ -1,56 +1,55 @@
 import pyray as pr
-import json
+from typing import TYPE_CHECKING, Any
+if TYPE_CHECKING:
+    from SceneManager import SceneManager
+
+
+class Resource():
+    def __init__(self, key: str, path: str):
+        self.key:  str = key
+        self.path: str = path
 
 
 class ResourceManager():
-    def __init__(self):
-        self.textures: dict(str, pr.Texture) = {}
-        self.sounds = {}
-        self.music = {}
-        self.fonts = {}
-        self.locales = {}
+    def __init__(self, sceneManager: 'SceneManager') -> None:
+        self.textures: dict[str, pr.Texture] = {}
+        self.sounds:   dict[str, pr.Sound] = {}
+        self.music:    dict[str, pr.Music] = {}
+        self.fonts:    dict[str, pr.Font] = {}
+        self.locales:  dict[str, Any] = {}
+        self.sm:       'SceneManager' = sceneManager
 
-    def load_texture(self, path: str) -> pr.Texture:
-        if path not in self.textures:
-            self.textures[path] = pr.load_texture(path)
-        return self.textures[path]
+    def load_texture(self, path: str, key: str) -> None:
+        if key not in self.textures:
+            self.textures[key] = pr.load_texture(path)
 
-    def load_sound(self, path: str):
+    def load_sound(self, path: str) -> None:
         if path not in self.sounds:
             self.sounds[path] = pr.load_sound(path)
-        return self.sounds[path]
 
-    def load_music(self, path: str):
+    def load_music(self, path: str) -> None:
         if path not in self.music:
             self.music[path] = pr.load_music_stream(path)
-        return self.music[path]
 
-    def load_font(self, path: str, size):
+    def load_font(self, path: str) -> None:
         if path not in self.fonts:
-            self.fonts[path] = {}
-        if size not in self.fonts[path]:
-            self.fonts[path][size] = pr.load_font(path, size)
-        return self.fonts[path][size]
+            self.fonts[path] = pr.load_font(path)
 
-    def load_locales(self, path: str):
-        if path not in self.locales:
-            try:
-                self.locales[path] = json.loads(pr.load_file_text(path))
-            except json.JSONDecodeError:
-                self.sceneManager.logMessage("Failed to load locale!", 2)
-        return self.locales[path]
+    def load_locales(self, path: str) -> None:
+        # Nothing yet
+        pass
 
-    def unload_texture(self, path: str):
+    def unload_texture(self, path: str) -> None:
         if path in self.textures:
             pr.unload_texture(self.textures[path])
             del self.textures[path]
 
-    def unload_sound(self, path: str):
+    def unload_sound(self, path: str) -> None:
         if path in self.sounds:
             pr.unload_sound(self.sounds[path])
             del self.sounds[path]
 
-    def unload_music(self, path: str):
+    def unload_music(self, path: str) -> None:
         if path in self.music:
             pr.unload_music_stream(self.music[path])
             del self.music[path]

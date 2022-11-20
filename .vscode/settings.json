@@ -21,5 +21,6 @@
       "Python/Include": true,
       "Python/Lib": true,
       "Python/Scripts": true
-    }
+    },
+    "python.analysis.typeCheckingMode": "strict"
 }

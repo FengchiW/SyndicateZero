@@ -1,11 +1,13 @@
-from .ResourceManager import ResourceManager as rm
+from .ResourceManager import ResourceManager
 import pyray as pr
+from typing import Any
 
 
 class Scene:
-    def __init__(self, sceneManager, name="UNKNOWN") -> None:
-        self._sm = sceneManager
-        self.name = name
+    def __init__(self, sceneManager: 'SceneManager',
+                 name: str = "UNKNOWN") -> None:
+        self._sm:    'SceneManager' = sceneManager
+        self.name:   str = name
 
     def update(self, deltaTime: float) -> None:
         pass
@@ -14,7 +16,7 @@ class Scene:
         pass
 
     def handle_input(self) -> None:
-        if (pr.is_key_pressed(pr.KEY_BACKSLASH)):
+        if (pr.is_key_pressed(164)):
             sw = pr.get_screen_width()
             sh = pr.get_screen_height()
             self._sm.consoleRect = pr.Rectangle(
@@ -31,13 +33,14 @@ class Scene:
 
 class SceneManager:
     def __init__(self) -> None:
-        self.scenes: list(Scene) = []
-        self.consoleMessages: list(str) = []
+        self.scenes:                    list[Scene] = []
+        self.consoleMessages:           list[str] = []
         self.shownConsoleMessagesIndex: int = 0
-        self.consoleRect: pr.Rectangle = pr.Rectangle(0, 0, 0, 0)
-        self.debug: bool = False
-        self.shouldExit: bool = False
-        self.rm: rm = rm()
+        self.consoleRect:               pr.Rectangle = pr.Rectangle(0, 0, 0, 0)
+        self.debug:                     bool = False
+        self.shouldExit:                bool = False
+        self.rm:                        ResourceManager = ResourceManager(self)
+        self.sceneData:                 dict[str, Any] = {}
 
     def pushScene(self, scene: Scene) -> None:
         self.logMessage(f"Entering {scene}")
@@ -54,7 +57,7 @@ class SceneManager:
         self.scenes.append(scene)
         self.logMessage(f"Changing scene to {scene}")
 
-    def logMessage(self, msg, level=0) -> None:
+    def logMessage(self, msg: str, level: int = 0) -> None:
         if level == 0:
             self.consoleMessages.append(f"INFO: {msg}")
         elif level == 1:

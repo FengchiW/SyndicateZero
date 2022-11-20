@@ -3,23 +3,25 @@ import pyray as pr
 from .LeaderSelect import LeaderSelectScene
 from ..SceneManager import Scene, SceneManager
 from ..util import Button
+from pyray import Color, Vector2
 
 
 class MainMenu(Scene):
     def __init__(self, sm: SceneManager) -> None:
         super().__init__(sm, "MainMenu")
-        self.bg = sm.rm.load_texture("res/background.png")
+        sm.rm.load_texture("res/background.png", "background")
         self._sm.logMessage("Loaded background texture")
-        width: int = pr.get_screen_width()
-        height: int = pr.get_screen_height()
-        buttonHeight: int = height // 10
-        buttonWidth: int = width // 4
-        buttonY: int = ((height*5)//6) - (buttonHeight//2)
+        self.bg = sm.rm.textures["background"]
+        width:          int = pr.get_screen_width()
+        height:         int = pr.get_screen_height()
+        buttonHeight:   int = height // 10
+        buttonWidth:    int = width // 4
+        buttonY:        int = ((height * 5) // 6) - (buttonHeight//2)
 
         def getButtonX(i: int) -> int:
-            return (width*i//4) - buttonWidth
+            return (width * i // 4) - buttonWidth
 
-        self.buttons: list(Button) = [
+        self.buttons: list[Button] = [
             Button(getButtonX(1), buttonY,
                    buttonWidth, buttonHeight, "Solo",
                    lambda: self._sm.changeScene(
@@ -40,7 +42,8 @@ class MainMenu(Scene):
 
     def draw(self) -> None:
         super().draw()
-        pr.draw_texture_ex(self.bg, (0, 0), 0, 1, (255, 255, 255, 255))
+        pr.draw_texture_ex(self.bg, Vector2(0, 0), 0, 1,
+                           Color(255, 255, 255, 255))
         for btn in self.buttons:
             btn.draw()
 

@@ -2,6 +2,7 @@ from src import SceneManager
 from src.Scenes.MainMenu import MainMenu
 import pyray as pr
 from src import Constants
+from pyray import Color
 
 
 def main():
@@ -15,13 +16,13 @@ def main():
 
     while not pr.window_should_close():
         pr.begin_drawing()
-        pr.clear_background((255, 255, 255, 255))
+        pr.clear_background(Color(255, 255, 255, 255))
         currentScene = sm.scenes[-1]
         currentScene.update(pr.get_frame_time())
         currentScene.draw()
         currentScene.handle_input()
         if sm.debug:
-            pr.draw_rectangle_rec(sm.consoleRect, (0, 0, 0, 200))
+            pr.draw_rectangle_rec(sm.consoleRect, Color(0, 0, 0, 200))
             pr.draw_fps(20, 10)
             ci = sm.shownConsoleMessagesIndex
             for i, msg in enumerate(sm.consoleMessages):
@@ -29,7 +30,7 @@ def main():
                     pr.draw_text(
                         msg, 20, 20 * (i - ci + 1) + 20,
                         18,
-                        (150, 255, 255, 255)
+                        Color(150, 255, 255, 255)
                     )
 
         pr.end_drawing()

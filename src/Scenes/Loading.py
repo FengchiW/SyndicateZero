@@ -1,10 +1,13 @@
-from ..SceneManager import Scene
+from ..SceneManager import SceneManager, Scene
+from ..ResourceManager import Resource
 
 
 class LoadingScene(Scene):
-    def __init__(self, sm, resources, nextScene) -> None:
+    def __init__(self, sm: SceneManager, resources: list[Resource],
+                 nextScene: Scene) -> None:
         super().__init__(sm)
-        sm.rm.load_resources(resources)
+        # Write loading code here
+        sm.changeScene(nextScene)
 
     def update(self, deltaTime: float) -> None:
         super().update(deltaTime)
