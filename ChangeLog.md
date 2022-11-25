@@ -314,3 +314,18 @@ Post Version 1.1.5, this project adheres to [Semantic Versioning](https://semver
   - Fixed many issues with imports
 ### Removed
   - Removed unneeded asyncronous code
+
+
+## [1.2.4.1] - 2022-11-20
+
+
+## [1.3.0.1] - 2022-11-25
+### Added
+  - Added Cards!
+  - Added Camera
+### Changed
+  - Changed how spawning works to cards spawning
+### Fixed
+  - Fixed issues with scene transitions and circular dependencies
+### Removed
+  - Removed the old way unit spawning worked

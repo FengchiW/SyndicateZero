@@ -1,0 +1,9 @@
+{
+    "name": "Warrior",
+    "desc": "A warrior is a person engaged or experienced in warfare or combat, especially within the context of a tribal or clan-based warrior culture society that recognizes a separate warrior class or caste. A warrior is one who is or has been engaged in warfare or combat.",
+    "health": 1,
+    "attack": 1,
+    "range": 1,
+    "speed": 1,
+    "cost": 1
+}

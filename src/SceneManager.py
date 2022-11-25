@@ -16,13 +16,21 @@ class Scene:
         pass
 
     def handle_input(self) -> None:
-        if (pr.is_key_pressed(164)):
+        if (pr.is_key_pressed(pr.KeyboardKey.KEY_BACKSLASH)):
             sw = pr.get_screen_width()
             sh = pr.get_screen_height()
             self._sm.consoleRect = pr.Rectangle(
                 0, 0, sw, sh // 3
             )
             self._sm.debug = not self._sm.debug
+
+            if (pr.is_key_pressed(pr.KeyboardKey.KEY_UP)):
+                if (self._sm.shownConsoleMessagesIndex > 0):
+                    self._sm.shownConsoleMessagesIndex -= 1
+            elif (pr.is_key_pressed(pr.KeyboardKey.KEY_DOWN)):
+                if (self._sm.shownConsoleMessagesIndex <
+                        len(self._sm.consoleMessages) - 10):
+                    self._sm.shownConsoleMessagesIndex += 1
 
     def __str__(self) -> str:
         return self.name

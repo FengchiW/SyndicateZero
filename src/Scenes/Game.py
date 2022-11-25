@@ -1,9 +1,8 @@
 import pyray as pr
 from ..SceneManager import SceneManager, Scene
-from ..util import Unit, Tile, summonUnit, Button, distanceBetweenTiles
-import random
+from ..util import Unit, Tile, Button, distanceBetweenTiles, Card
 from threading import Thread
-
+from . import MainMenu
 
 from pyray import check_collision_point_rec as checkCollision
 from pyray import Color
@@ -19,26 +18,43 @@ class GameScene(Scene):
         super().__init__(sm, "Game")
         sw:           int = pr.get_screen_width()
         sh:           int = pr.get_screen_height()
+        sm.rm.load_card('Data/Cards/Warrior.json', 'warrior')
+        sm.rm.load_card('Data/Cards/Tank.json', 'tank')
+        sm.rm.load_card('Data/Cards/Archer.json', 'archer')
+        sm.rm.load_card('Data/Cards/Cavalry.json', 'cavalry')
+        sm.rm.load_card('Data/Cards/King.json', 'king')
 
+        self.camera: pr.Camera2D = pr.Camera2D(
+            pr.Vector2(0, 0), pr.Vector2(0, 0), 0, 1
+        )
         self.board:        list[Tile] = []
         self.screenWidth:  int = sw
         self.screenHeight: int = sh
         self.turn:         int = 0
         self.currentPhase: str = "Summon"
         self.units:        list[Unit] = []
-        self.hand:         list[Tile] = []
-        self.graveyard:    list[Unit] = []
-        self.deck:         list[Unit] = []
+        self.hand:         list[Card] = []
+        self.opponentHand: list[Card] = []
+        self.opponentDeck: list[Card] = [
+            Card(sm.rm.fetch_card('warrior')) for _ in range(10)
+        ]
+        self.deck:         list[Card] = [
+            Card(sm.rm.fetch_card('warrior')),
+            Card(sm.rm.fetch_card('archer')),
+            Card(sm.rm.fetch_card('warrior')),
+            Card(sm.rm.fetch_card('warrior')),
+            Card(sm.rm.fetch_card('archer')),
+        ]
         self.selectedUnit: Optional[Unit] = None
         self.gold:         int = 1
         self.bonusGold:    int = 0
+        self.selectedCard: Optional[Card] = None
+        self.hoveredTile:  Optional[Tile] = None
 
         self.endTurnButton = Button(sw - 200, sh - 50, 150, 50, "Next Phase",
                                     lambda: self.triggerEndTurn())
 
         self.spawnUnit = 'warrior'
-        self.spawnButton = Button(sw - 350, sh - 50, 150, 50, "Warrior",
-                                  lambda: self.switchUnit())
 
         # Create board
         boardViewPortSize: tuple[int, int] = (sw, (sh * 3) // 4)
@@ -58,7 +74,8 @@ class GameScene(Scene):
                                    self.board[0].rect.x,
                                    self.board[0].rect.y
                                ), self.board[0].rect.width,
-                               self.board[0].rect.height, self.board[0], 0)
+                               self.board[0].rect.height, self.board[0], 0,
+                          Card(sm.rm.fetch_card('king')))
                           )
         self.board[0].occupant = self.units[0]
         self.board[0].isOccupied = True
@@ -68,7 +85,8 @@ class GameScene(Scene):
                                    self.board[BOARD_WIDTH - 1].rect.y
                                ), self.board[BOARD_WIDTH - 1].rect.width,
                                self.board[BOARD_WIDTH - 1].rect.height,
-                               self.board[BOARD_WIDTH - 1], 1)
+                               self.board[BOARD_WIDTH - 1], 1,
+                          Card(sm.rm.fetch_card('king')))
                           )
         self.board[BOARD_WIDTH - 1].occupant = self.units[1]
         self.board[BOARD_WIDTH - 1].isOccupied = True
@@ -76,36 +94,48 @@ class GameScene(Scene):
         self.playerKing = self.units[0]
         self.enemyKing = self.units[1]
 
+        # draw cards
+        for i in range(3):
+            self.drawCard()
+            self.opponentHand.append(self.opponentDeck.pop())
+
     def triggerEndTurn(self):
         t = Thread(target=self.endTurn)
         t.start()
 
-    def switchUnit(self):
-        if self.spawnUnit == 'warrior':
-            self.spawnUnit = 'tank'
-            self.spawnButton.text = 'tank'
-        elif self.spawnUnit == 'tank':
-            self.spawnUnit = 'archer'
-            self.spawnButton.text = 'archer'
-        elif self.spawnUnit == 'archer':
-            self.spawnUnit = 'cavalry'
-            self.spawnButton.text = 'cavalry'
-        elif self.spawnUnit == 'cavalry':
-            self.spawnUnit = 'warrior'
-            self.spawnButton.text = 'warrior'
+    def drawCard(self):
+        if len(self.deck) > 0:
+            deckAreaWidth = self.screenWidth * 2 / 3
+            deckAreaX = self.screenWidth / 6
+            self.hand.append(self.deck.pop())
+            deckLength = len(self.deck)
+            self.hand[-1].setPosition(deckAreaX + deckAreaWidth *
+                                      (deckLength / 10),
+                                      self.screenHeight * 5 / 7)
+            self.hand[-1].setSizeForHand(self.screenWidth, self.screenHeight)
+            self.hand[-1].isInHand = True
+            self.hand[-1].isSelectable = True
+        else:
+            return
 
     def endTurn(self):
+        if self.playerKing.health <= 0:
+            self._sm.logMessage("You lost!")
+            self._sm.changeScene(MainMenu.MainMenu(self._sm))
+        if self.enemyKing.health <= 0:
+            self._sm.logMessage("You won!")
+            self._sm.changeScene(MainMenu.MainMenu(self._sm))
+
         if self.currentPhase == "Summon":
             for unit in self.units:
-                if unit.player == 0:
-                    unit.update()
+                unit.reset()
             self.currentPhase = "Move"
             self.endTurnButton.text = "End Turn"
         elif self.currentPhase == "Move":
             self.currentPhase = "Attack"
             for unit in self.units:
                 if unit.player == 1:
-                    unit.update()
+                    unit.reset()
             if self.enemyKing:
                 pass
             self.endTurnButton.text = "Attack"
@@ -113,58 +143,16 @@ class GameScene(Scene):
             self.endTurnButton.text = "Waiting..."
             self.endTurnButton.isDisabled = True
             self.currentPhase = "Enemy Summon"
-            summoningSquares = [self.board[9],
-                                self.board[19], self.board[29], self.board[39]]
-            canSpawn = self.turn
-            for i in range(4):
-                if canSpawn < 0:
-                    break
-                tile = summoningSquares[i]
-                willSpawn = random.randint(0, 3)
-                if self.turn > 3:
-                    willSpawn = random.randint(1, 3)
-                if self.turn > 6:
-                    willSpawn = random.randint(2, 3)
-                if willSpawn == 0:
-                    self.units.append(Unit(2, 1, 1, 2, "warrior",
-                                           pr.Vector2(
-                                               tile.rect.x, tile.rect.y),
-                                           tile.rect.width, tile.rect.height,
-                                           tile,
-                                           1))
-                    if (not summonUnit(self.units[-1], tile)):
-                        self.units.pop()
-                        canSpawn += 1
-                elif willSpawn == 1:
-                    self.units.append(Unit(6, 1, 1, 1, "tank",
-                                           pr.Vector2(
-                                               tile.rect.x, tile.rect.y),
-                                           tile.rect.width, tile.rect.height,
-                                           tile,
-                                           1))
-                    if (not summonUnit(self.units[-1], tile)):
-                        self.units.pop()
-                        canSpawn += 1
-                elif willSpawn == 2:
-                    self.units.append(Unit(1, 3, 3, 2, "archer",
-                                           pr.Vector2(
-                                               tile.rect.x, tile.rect.y),
-                                           tile.rect.width, tile.rect.height,
-                                           tile,
-                                           1))
-                    if (not summonUnit(self.units[-1], tile)):
-                        self.units.pop()
-                        canSpawn += 1
-                elif willSpawn == 4:
-                    self.units.append(Unit(4, 2, 1, 4, "cavalry",
-                                           pr.Vector2(
-                                               tile.rect.x, tile.rect.y),
-                                           tile.rect.width, tile.rect.height,
-                                           tile,
-                                           1))
-                    if (not summonUnit(self.units[-1], tile)):
-                        self.units.pop()
-                        canSpawn += 1
+
+            self.summoningTiles = [
+                tile for tile in self.board if tile.isOccupied is False
+            ]
+
+            for card in self.opponentHand:
+                self.units.append(card.summonCard(
+                    self.summoningTiles.pop(), 1))
+                self.opponentHand.remove(card)
+
             self.endTurn()
         elif self.currentPhase == "Enemy Summon":
             self.currentPhase = "Enemy Move"
@@ -211,10 +199,12 @@ class GameScene(Scene):
         else:
             self.currentPhase = "Summon"
             self.endTurnButton.text = "Next Phase"
+            self.drawCard()
             self.gold = self.turn
             self.endTurnButton.isDisabled = False
 
     def drawBoard(self):
+        pr.begin_mode_2d(self.camera)
         for tile in self.board:
             tile.draw()
         for unit in self.units:
@@ -244,9 +234,10 @@ class GameScene(Scene):
             else:
                 pass
 
+        pr.end_mode_2d()
+
     def drawUI(self):
         self.endTurnButton.draw()
-        self.spawnButton.draw()
 
         # draw the current turn number and phase
         pr.draw_text(f"Turn: {self.turn}",
@@ -273,25 +264,40 @@ class GameScene(Scene):
         # draw a health bar
         pr.draw_rectangle(0, self.screenHeight - 20, 200, 20,
                           Color(255, 0, 0, 100))
-        pr.draw_rectangle(0, self.screenHeight - 20, 150, 20,
+        pr.draw_rectangle(0, self.screenHeight - 20,
+                          int(200 * self.playerKing.health /
+                              self.playerKing.maxHealth), 20,
                           Color(0, 255, 0, 100))
 
         # draw cards in hand
         for i in range(len(self.hand)):
             self.hand[i].draw()
 
+        if self.selectedCard:
+            self.selectedCard.draw()
+
     def update(self, deltaTime: float) -> None:
         super().update(deltaTime)
+        for card in self.hand:
+            card.update(deltaTime)
+
         mouse = pr.get_mouse_position()
+        isATileHovered = False
         for tile in self.board:
             tile.hovered = False
-            if checkCollision(mouse, tile.rect):
+            if checkCollision(pr.get_screen_to_world_2d(mouse, self.camera),
+                              tile.rect):
                 tile.hovered = True
+                isATileHovered = True
+                self.hoveredTile = tile
+        if not isATileHovered:
+            self.hoveredTile = None
 
         hasAllUnitsMoved = True
         if len(self.units) == 0:
             hasAllUnitsMoved = False
         for unit in self.units:
+            unit.update(deltaTime)
             if unit.health <= 0:
                 unit.tile.occupant = None
                 unit.tile.isOccupied = False
@@ -316,82 +322,88 @@ class GameScene(Scene):
         if not (self.currentPhase in ["Summon", "Attack", "Move"]):
             hasAllUnitsMoved = False
 
-        if self.currentPhase == "Summon":
-            summoningTiles = [self.board[0], self.board[10],
-                              self.board[20], self.board[30]]
-            for tile in summoningTiles:
-                if tile.isOccupied:
-                    hasAllUnitsMoved = False
-
         if hasAllUnitsMoved:
             self.triggerEndTurn()
 
+        # Camera movements
+        if pr.is_key_down(pr.KEY_W):
+            self.camera.target.y = pr.lerp(self.camera.target.y,
+                                           self.camera.target.y - 10,
+                                           20 * deltaTime)
+        if pr.is_key_down(pr.KEY_S):
+            self.camera.target.y = pr.lerp(self.camera.target.y,
+                                           self.camera.target.y + 10,
+                                           20 * deltaTime)
+        if pr.is_key_down(pr.KEY_A):
+            self.camera.target.x = pr.lerp(self.camera.target.x,
+                                           self.camera.target.x - 10,
+                                           20 * deltaTime)
+        if pr.is_key_down(pr.KEY_D):
+            self.camera.target.x = pr.lerp(self.camera.target.x,
+                                           self.camera.target.x + 10,
+                                           10 * deltaTime)
+        mouseWheel = pr.get_mouse_wheel_move()
+        self.camera.zoom = pr.lerp(self.camera.zoom,
+                                   self.camera.zoom + 0.1,
+                                   mouseWheel * 20 * deltaTime)
+
     def draw(self) -> None:
         super().draw()
+        pr.clear_background(Color(20, 100, 20, 255))
         self.drawBoard()
         self.drawUI()
 
     def handle_input(self) -> None:
         super().handle_input()
-        if self.currentPhase == "Summon":
-            mouse = pr.get_mouse_position()
-            summoningTiles = [self.board[0], self.board[10],
-                              self.board[20], self.board[30]]
-            for tile in summoningTiles:
-                if checkCollision(mouse, tile.rect):
-                    if (pr.is_mouse_button_pressed(pr.MOUSE_LEFT_BUTTON)
-                            and self.gold > 0):
-                        if self.spawnUnit == "warrior":
-                            self.gold -= 1
+
+        mouse = pr.get_mouse_position()
+        if (self.selectedCard is None):
+            for card in self.hand:
+                if (card.is_mouse_over(mouse)):
+                    if (self.selectedCard is None):
+                        self.selectedCard = card
+                        self.selectedCard.isHovered = True
+        else:
+            if (not self.selectedCard.is_mouse_over(mouse)):
+                self.selectedCard.isHovered = False
+                self.selectedCard = None
+            elif (pr.is_mouse_button_down(pr.MOUSE_LEFT_BUTTON)):
+                self.selectedCard.isHeld = True
+            elif (self.selectedCard.isHeld):
+                if (not (self.hoveredTile is None)):
+                    if (self.hoveredTile.isOccupied):
+                        self.selectedCard.isHeld = False
+                    else:
+                        if (self.gold >= self.selectedCard.cost):
+                            self.gold -= self.selectedCard.cost
+                            self.selectedCard.isHeld = False
+                            self.selectedCard.isHovered = False
+                            self.selectedCard.isSelectable = False
                             self.units.append(
-                                Unit(2, 1, 1, 2, "warrior",
-                                     pr.Vector2(tile.rect.x, tile.rect.y),
-                                     tile.rect.width, tile.rect.height, tile, 0))
-                            if (not summonUnit(self.units[-1], tile)):
-                                self.gold += 1
-                                self.units.pop()
-                        elif self.spawnUnit == "tank":
-                            if self.gold >= 2:
-                                self.gold -= 2
-                                self.units.append(
-                                    Unit(6, 1, 1, 1, "tank",
-                                         pr.Vector2(tile.rect.x, tile.rect.y),
-                                         tile.rect.width, tile.rect.height, tile, 0))
-                                if (not summonUnit(self.units[-1], tile)):
-                                    self.gold += 1
-                                    self.units.pop()
-                        elif self.spawnUnit == "archer":
-                            if self.gold >= 2:
-                                self.gold -= 2
-                                self.units.append(
-                                    Unit(1, 3, 2, 2, "archer",
-                                         pr.Vector2(tile.rect.x, tile.rect.y),
-                                         tile.rect.width, tile.rect.height, tile, 0))
-                                if (not summonUnit(self.units[-1], tile)):
-                                    self.gold += 2
-                                    self.units.pop()
-                        elif self.spawnUnit == "cavalry":
-                            if self.gold >= 3:
-                                self.gold -= 3
-                                self.units.append(
-                                    Unit(4, 2, 1, 3, "cavalry",
-                                         pr.Vector2(tile.rect.x, tile.rect.y),
-                                         tile.rect.width, tile.rect.height, tile, 0))
-                                if (not summonUnit(self.units[-1], tile)):
-                                    self.gold += 3
-                                    self.units.pop()
-                        if self.gold == 0:
-                            self.triggerEndTurn()
-        elif self.currentPhase == "Move":
+                                self.selectedCard.summonCard(
+                                    self.hoveredTile, 0)
+                            )
+                            self.hand.remove(self.selectedCard)
+                self.selectedCard.isHeld = False
+                self.selectedCard.isHovered = False
+                self.selectedCard = None
+            else:
+                self.selectedCard.isHeld = False
+
+        if self.currentPhase == "Move":
             for unit in self.units:
                 if unit.player == 0:
-                    if checkCollision(pr.get_mouse_position(), unit.rect):
+                    if checkCollision(
+                            pr.get_screen_to_world_2d(mouse,
+                                                      self.camera), unit.rect):
                         if pr.is_mouse_button_pressed(pr.MOUSE_LEFT_BUTTON):
                             self.selectedUnit = unit
                             break
             if (self.selectedUnit):
                 for tile in self.board:
-                    if checkCollision(pr.get_mouse_position(), tile.rect):
+                    if checkCollision(
+                        pr.get_screen_to_world_2d(mouse,
+                                                  self.camera), tile.rect):
                         if pr.is_mouse_button_pressed(pr.MOUSE_LEFT_BUTTON):
                             if self.selectedUnit.canMoveToTile(tile):
                                 self.selectedUnit.move(tile)
@@ -413,8 +425,6 @@ class GameScene(Scene):
                                 self.selectedUnit = None
                                 break
         else:
-            # Unknown phase
             pass
 
         self.endTurnButton.handle_input(pr.get_mouse_position())
-        self.spawnButton.handle_input(pr.get_mouse_position())

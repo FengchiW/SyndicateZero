@@ -1,0 +1,9 @@
+{
+    "name": "MISSIONO",
+    "desc": "Hmm I shouldn't be here",
+    "health": -69,
+    "attack": 0,
+    "range": 0,
+    "speed": 0,
+    "cost": 1
+}

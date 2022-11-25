@@ -1,6 +1,6 @@
 import pyray as pr
 
-from .LeaderSelect import LeaderSelectScene
+from . import Naming
 from ..SceneManager import Scene, SceneManager
 from ..util import Button
 from pyray import Color, Vector2
@@ -10,8 +10,7 @@ class MainMenu(Scene):
     def __init__(self, sm: SceneManager) -> None:
         super().__init__(sm, "MainMenu")
         sm.rm.load_texture("res/background.png", "background")
-        self._sm.logMessage("Loaded background texture")
-        self.bg = sm.rm.textures["background"]
+        self.bg = sm.rm.fetch_texture("background")
         width:          int = pr.get_screen_width()
         height:         int = pr.get_screen_height()
         buttonHeight:   int = height // 10
@@ -24,9 +23,7 @@ class MainMenu(Scene):
         self.buttons: list[Button] = [
             Button(getButtonX(1), buttonY,
                    buttonWidth, buttonHeight, "Solo",
-                   lambda: self._sm.changeScene(
-                LeaderSelectScene(self._sm)
-            )),
+                   lambda: self.newGame()),
             Button(getButtonX(2), buttonY,
                    buttonWidth, buttonHeight, "Multiplayer",
                    None, True),
@@ -36,6 +33,22 @@ class MainMenu(Scene):
             Button(getButtonX(4), buttonY, buttonWidth, buttonHeight,
                    "Quit", lambda: self._sm.popScene())
         ]
+
+    def newGame(self):
+        self._sm.sceneData["player"] = {
+            "name": "Player",
+            "money": 0,
+            "inventory": [],
+            "cards": [],
+            "health": 4,
+            "maxHealth": 4,
+            "attack": 1,
+            "range": 1,
+            "speed": 1,
+        }
+        self._sm.changeScene(
+            Naming.NamingScene(self._sm)
+        )
 
     def update(self, deltaTime: float) -> None:
         super().update(deltaTime)
