@@ -24,6 +24,7 @@ class Scene:
             )
             self._sm.debug = not self._sm.debug
 
+        if (self._sm.debug):
             if (pr.is_key_pressed(pr.KeyboardKey.KEY_UP)):
                 if (self._sm.shownConsoleMessagesIndex > 0):
                     self._sm.shownConsoleMessagesIndex -= 1

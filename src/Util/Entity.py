@@ -8,16 +8,10 @@ from typing import Optional, Any
 class Entity():
     def __init__(self, position: pr.Vector2, width: float, height: float,
                  texture: Optional[pr.Image] = None):
-        self.rect: pr.Rectangle = pr.Rectangle(position.x, position.y,
-                                               width, height)
         self.isHovered: bool = False
         self.isSelectable: bool = False
         self.isSelected: bool = False
         # self.texture: pr.Image = None
-
-    def setPosition(self, x: float, y: float) -> None:
-        self.rect.x = x
-        self.rect.y = y
 
     def draw(self):
         pass
@@ -44,6 +38,8 @@ class Unit(Entity):
         self.hasAttacked: bool = False
         self.card:       'Card' = card
         self.target:    Vector2 = position
+        self.rect: pr.Rectangle = pr.Rectangle(position.x, position.y,
+                                               width, height)
 
         self.textLength: int = pr.measure_text(self.type, 20)
 
@@ -68,18 +64,16 @@ class Unit(Entity):
     def move(self, tile: Tile) -> bool:
         if self.canMoveToTile(tile):
             distance = round(math.sqrt(distanceBetweenTiles(self.tile, tile)))
-            self.tile.isOccupied = False
             self.tile.occupant = None
-            tile.isOccupied = True
             tile.occupant = self
             self.tile = tile
-            self.target = Vector2(tile.rect.x, tile.rect.y)
+            self.target = Vector2(tile.collisionShape.x, tile.collisionShape.y)
             self.moves -= distance
             return True
         return False
 
     def canMoveToTile(self, tile: Tile) -> bool:
-        if tile.isOccupied:
+        if tile.occupant:
             return False
         if (distanceBetweenTiles(self.tile, tile) <= (self.moves ** 2)):
             return True
@@ -119,6 +113,8 @@ class Card(Entity):
         self.isInHand: bool = False
         self.isHeld: bool = False
 
+        self.rect: pr.Rectangle = pr.Rectangle(0, 0, 0, 0)
+
         self.rectangles: dict[str, pr.Rectangle] = {
             "header": pr.Rectangle(0, 0, 0, 0),
             "body": pr.Rectangle(0, 0, 0, 0),
@@ -127,13 +123,17 @@ class Card(Entity):
         self.originalX = self.rect.x
         self.originalY = self.rect.y
 
+    def setPosition(self, x: float, y: float) -> None:
+        self.rect.x = x
+        self.rect.y = y
+
     def setSizeForHand(self, sw: float, sh: float):
         self.originalX = self.rect.x
         self.originalY = self.rect.y
         self.rect.width = 175
         self.rect.height = 225
 
-    def update(self, dt: float):
+    def update(self, deltaTime: float):
         if self.isInHand:
             self.rectangles["header"] = pr.Rectangle(
                 self.rect.x, self.rect.y, self.rect.width,
@@ -146,11 +146,11 @@ class Card(Entity):
                 self.rect.height * 0.8)
         if self.isHovered:
             if self.rect.y > self.originalY - 100:
-                self.rect.y -= 500 * dt
+                self.rect.y -= 500 * deltaTime
             if self.rect.width < 200:
-                self.rect.width += 100 * dt
+                self.rect.width += 100 * deltaTime
             if self.rect.height < 250:
-                self.rect.height += 100 * dt
+                self.rect.height += 100 * deltaTime
         else:
             self.rect.x = self.originalX
             self.rect.y = self.originalY
@@ -169,8 +169,8 @@ class Card(Entity):
                     self.unitData["range"],
                     self.unitData["speed"],
                     self.name,
-                    pr.Vector2(tile.rect.x, tile.rect.y),
-                    tile.rect.width, tile.rect.height,
+                    pr.Vector2(tile.collisionShape.x, tile.collisionShape.y),
+                    tile.collisionShape.radius, tile.collisionShape.radius,
                     tile, player, self)
         tile.isOccupied = True
         tile.occupant = unit
@@ -184,8 +184,8 @@ class Card(Entity):
                               Color(100, 100, 100, 255))
         pr.draw_rectangle_rec(self.rectangles["body"],
                               Color(50, 50, 50, 255))
-        pr.draw_text(self.name, int(self.rectangles["header"].x),
-                     int(self.rectangles["header"].y), 20,
+        pr.draw_text(self.name, int(self.rectangles["header"].x + 10),
+                     int(self.rectangles["header"].y + 5), 20,
                      Color(255, 255, 255, 255))
         if not self.isInHand:
             pr.draw_text(self.desc, int(self.rectangles["body"].x),
@@ -195,11 +195,13 @@ class Card(Entity):
             pr.draw_text(f"{self.cost}",
                          int(self.rectangles["header"].x +
                              self.rectangles["header"].width - 20),
-                         int(self.rectangles["header"].y), 20,
+                         int(self.rectangles["header"].y + 5), 20,
                          Color(255, 255, 255, 255))
 
         if self.isHovered:
             pr.draw_rectangle_rec(self.rect, Color(255, 255, 255, 100))
+
+        pr.draw_rectangle_lines_ex(self.rect, 2, Color(0, 0, 0, 255))
 
     def is_mouse_over(self, mouse: Vector2) -> bool:
         if (not self.isSelectable):

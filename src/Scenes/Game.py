@@ -1,6 +1,6 @@
 import pyray as pr
 from ..SceneManager import SceneManager, Scene
-from ..util import Unit, Tile, Button, distanceBetweenTiles, Card
+from ..util import Unit, Tile, Button, distanceBetweenTiles, Card, Board
 from threading import Thread
 from . import MainMenu
 
@@ -9,8 +9,8 @@ from pyray import Color
 from typing import Optional
 
 
-BOARD_WIDTH = 10
-BOARD_HEIGHT = 4
+BOARD_WIDTH = 15
+BOARD_HEIGHT = 8
 
 
 class GameScene(Scene):
@@ -24,10 +24,7 @@ class GameScene(Scene):
         sm.rm.load_card('Data/Cards/Cavalry.json', 'cavalry')
         sm.rm.load_card('Data/Cards/King.json', 'king')
 
-        self.camera: pr.Camera2D = pr.Camera2D(
-            pr.Vector2(0, 0), pr.Vector2(0, 0), 0, 1
-        )
-        self.board:        list[Tile] = []
+        self.board:        Board = Board(BOARD_WIDTH, BOARD_HEIGHT, 50)
         self.screenWidth:  int = sw
         self.screenHeight: int = sh
         self.turn:         int = 0
@@ -55,47 +52,35 @@ class GameScene(Scene):
                                     lambda: self.triggerEndTurn())
 
         self.spawnUnit = 'warrior'
-
-        # Create board
         boardViewPortSize: tuple[int, int] = (sw, (sh * 3) // 4)
-        for i in range(BOARD_HEIGHT):
-            for j in range(BOARD_WIDTH):
-                self.board.append(Tile(
-                    i, j,
-                    boardViewPortSize[0] / BOARD_WIDTH,
-                    boardViewPortSize[1] / BOARD_HEIGHT,
-                    pr.Vector2(j * (boardViewPortSize[0] / BOARD_WIDTH),
-                               i * (boardViewPortSize[1] / BOARD_HEIGHT))
-                ))
+        self.tileSize:          float = boardViewPortSize[0] / BOARD_WIDTH
+
+        # Camera
+        self.camera: pr.Camera2D = pr.Camera2D(
+            pr.Vector2(self.tileSize, 0),
+            pr.Vector2(0, 0),
+            0,
+            1
+        )
+
+        self.cameraTarget = pr.Vector2(self.tileSize, 0)
+        self.cameraZoom = 1
 
         # kings
-        self.units.append(Unit(10, 4, 1, 1, "King",
-                               pr.Vector2(
-                                   self.board[0].rect.x,
-                                   self.board[0].rect.y
-                               ), self.board[0].rect.width,
-                               self.board[0].rect.height, self.board[0], 0,
-                          Card(sm.rm.fetch_card('king')))
-                          )
-        self.board[0].occupant = self.units[0]
-        self.board[0].isOccupied = True
-        self.units.append(Unit(10, 4, 1, 1, "King",
-                               pr.Vector2(
-                                   self.board[BOARD_WIDTH - 1].rect.x,
-                                   self.board[BOARD_WIDTH - 1].rect.y
-                               ), self.board[BOARD_WIDTH - 1].rect.width,
-                               self.board[BOARD_WIDTH - 1].rect.height,
-                               self.board[BOARD_WIDTH - 1], 1,
-                          Card(sm.rm.fetch_card('king')))
-                          )
-        self.board[BOARD_WIDTH - 1].occupant = self.units[1]
-        self.board[BOARD_WIDTH - 1].isOccupied = True
+        self.units.append(
+            Card(sm.rm.fetch_card('king')).summonCard(self.board[0, 0], 0)
+        )
+        self.board[0, 0].occupant = self.units[0]
 
+        self.units.append(
+            Card(sm.rm.fetch_card('king')).summonCard(self.board[10, 0], 1)
+        )
+        self.board[10, 0].occupant = self.units[1]
         self.playerKing = self.units[0]
         self.enemyKing = self.units[1]
 
         # draw cards
-        for i in range(3):
+        for _ in range(3):
             self.drawCard()
             self.opponentHand.append(self.opponentDeck.pop())
 
@@ -115,8 +100,6 @@ class GameScene(Scene):
             self.hand[-1].setSizeForHand(self.screenWidth, self.screenHeight)
             self.hand[-1].isInHand = True
             self.hand[-1].isSelectable = True
-        else:
-            return
 
     def endTurn(self):
         if self.playerKing.health <= 0:
@@ -145,13 +128,14 @@ class GameScene(Scene):
             self.currentPhase = "Enemy Summon"
 
             self.summoningTiles = [
-                tile for tile in self.board if tile.isOccupied is False
+                tile for tile in self.board if tile.occupant is False
             ]
 
             for card in self.opponentHand:
-                self.units.append(card.summonCard(
-                    self.summoningTiles.pop(), 1))
-                self.opponentHand.remove(card)
+                if self.summoningTiles:
+                    self.units.append(card.summonCard(
+                        self.summoningTiles.pop(), 1))
+                    self.opponentHand.remove(card)
 
             self.endTurn()
         elif self.currentPhase == "Enemy Summon":
@@ -188,7 +172,7 @@ class GameScene(Scene):
             for unit in self.units:
                 if unit.player == 1:
                     for tile in self.board:
-                        if tile.isOccupied and tile.occupant.player == 0:
+                        if tile.occupant and tile.occupant.player == 0:
                             if unit.canAttackUnit(tile.occupant):
                                 unit.attackUnit(tile.occupant)
             if self.playerKing.health <= 0:
@@ -221,18 +205,6 @@ class GameScene(Scene):
                                     int(self.selectedUnit.rect.width),
                                     int(self.selectedUnit.rect.height),
                                     Color(255, 255, 255, 255))
-            if (self.currentPhase == "Move"):
-                for tile in self.board:
-                    if self.selectedUnit.canMoveToTile(tile):
-                        pr.draw_rectangle_lines_ex(tile.rect, 2,
-                                                   Color(255, 255, 255, 255))
-            elif (self.currentPhase == "Attack"):
-                for unit in self.units:
-                    if self.selectedUnit.canAttackUnit(unit):
-                        pr.draw_rectangle_lines_ex(unit.rect, 2,
-                                                   Color(255, 255, 255, 255))
-            else:
-                pass
 
         pr.end_mode_2d()
 
@@ -282,11 +254,12 @@ class GameScene(Scene):
             card.update(deltaTime)
 
         mouse = pr.get_mouse_position()
+        mouseWorld = pr.get_screen_to_world_2d(mouse, self.camera)
         isATileHovered = False
         for tile in self.board:
             tile.hovered = False
-            if checkCollision(pr.get_screen_to_world_2d(mouse, self.camera),
-                              tile.rect):
+            # TODO: fix this
+            if tile.collisionShape.checkCollisionPoint(mouseWorld):
                 tile.hovered = True
                 isATileHovered = True
                 self.hoveredTile = tile
@@ -300,7 +273,6 @@ class GameScene(Scene):
             unit.update(deltaTime)
             if unit.health <= 0:
                 unit.tile.occupant = None
-                unit.tile.isOccupied = False
                 self.units.remove(unit)
 
             if unit.player == 0:
@@ -311,7 +283,7 @@ class GameScene(Scene):
                     if unit.player == 0:
                         canAttack = False
                         for tile in self.board:
-                            if tile.isOccupied and tile.occupant.player == 1:
+                            if tile.occupant and tile.occupant.player == 1:
                                 if unit.canAttackUnit(tile.occupant):
                                     canAttack = True
                         if ((not unit.hasAttacked) and canAttack):
@@ -326,26 +298,12 @@ class GameScene(Scene):
             self.triggerEndTurn()
 
         # Camera movements
-        if pr.is_key_down(pr.KEY_W):
-            self.camera.target.y = pr.lerp(self.camera.target.y,
-                                           self.camera.target.y - 10,
-                                           20 * deltaTime)
-        if pr.is_key_down(pr.KEY_S):
-            self.camera.target.y = pr.lerp(self.camera.target.y,
-                                           self.camera.target.y + 10,
-                                           20 * deltaTime)
-        if pr.is_key_down(pr.KEY_A):
-            self.camera.target.x = pr.lerp(self.camera.target.x,
-                                           self.camera.target.x - 10,
-                                           20 * deltaTime)
-        if pr.is_key_down(pr.KEY_D):
-            self.camera.target.x = pr.lerp(self.camera.target.x,
-                                           self.camera.target.x + 10,
-                                           10 * deltaTime)
-        mouseWheel = pr.get_mouse_wheel_move()
-        self.camera.zoom = pr.lerp(self.camera.zoom,
-                                   self.camera.zoom + 0.1,
-                                   mouseWheel * 20 * deltaTime)
+        if self.camera.zoom < self.cameraZoom:
+            self.camera.zoom = pr.lerp(self.camera.zoom,
+                                       self.cameraZoom, 10 * deltaTime)
+        elif self.camera.zoom > self.cameraZoom:
+            self.camera.zoom = pr.lerp(self.camera.zoom,
+                                       self.cameraZoom, 10 * deltaTime)
 
     def draw(self) -> None:
         super().draw()
@@ -356,7 +314,15 @@ class GameScene(Scene):
     def handle_input(self) -> None:
         super().handle_input()
 
+        if pr.get_mouse_wheel_move() > 0:
+            self.cameraZoom += 0.1
+            self.cameraZoom = pr.clamp(self.cameraZoom, 0.1, 3)
+        elif pr.get_mouse_wheel_move() < 0:
+            self.cameraZoom -= 0.1
+            self.cameraZoom = pr.clamp(self.cameraZoom, 0.1, 3)
+
         mouse = pr.get_mouse_position()
+        mouseWorldPos = pr.get_screen_to_world_2d(mouse, self.camera)
         if (self.selectedCard is None):
             for card in self.hand:
                 if (card.is_mouse_over(mouse)):
@@ -371,7 +337,7 @@ class GameScene(Scene):
                 self.selectedCard.isHeld = True
             elif (self.selectedCard.isHeld):
                 if (not (self.hoveredTile is None)):
-                    if (self.hoveredTile.isOccupied):
+                    if (self.hoveredTile.occupant):
                         self.selectedCard.isHeld = False
                     else:
                         if (self.gold >= self.selectedCard.cost):
@@ -393,21 +359,24 @@ class GameScene(Scene):
         if self.currentPhase == "Move":
             for unit in self.units:
                 if unit.player == 0:
-                    if checkCollision(
-                            pr.get_screen_to_world_2d(mouse,
-                                                      self.camera), unit.rect):
+                    if checkCollision(mouseWorldPos, unit.rect):
                         if pr.is_mouse_button_pressed(pr.MOUSE_LEFT_BUTTON):
                             self.selectedUnit = unit
+                            for tile in self.board:
+                                if self.selectedUnit.canMoveToTile(tile):
+                                    tile.highlighted = True
+                                else:
+                                    tile.highlighted = False
                             break
             if (self.selectedUnit):
                 for tile in self.board:
-                    if checkCollision(
-                        pr.get_screen_to_world_2d(mouse,
-                                                  self.camera), tile.rect):
+                    if tile.collisionShape.checkCollisionPoint(mouseWorldPos):
                         if pr.is_mouse_button_pressed(pr.MOUSE_LEFT_BUTTON):
                             if self.selectedUnit.canMoveToTile(tile):
                                 self.selectedUnit.move(tile)
                                 self.selectedUnit = None
+                                for tile in self.board:
+                                    tile.highlighted = False
                                 break
         elif self.currentPhase == "Attack":
             for unit in self.units:

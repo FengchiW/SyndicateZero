@@ -18,9 +18,12 @@
     "files.autoSave": "afterDelay",
     "editor.tabSize": 4,
     "files.exclude": {
-      "Python/Include": true,
-      "Python/Lib": true,
-      "Python/Scripts": true
+      "Include": true,
+      "Lib": true,
+      "Scripts": true,
+      "build": true,
+      "pyvenv.cfg": true,
+      "**/__pycache__": true
     },
     "python.analysis.typeCheckingMode": "strict"
 }

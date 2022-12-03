@@ -15,7 +15,7 @@ class IntroScene(Scene):
             f'your guide through this world. I will teach you '
             f'everything you need to know. I will also be your ',
             "Enjoy the game!"
-            ]
+        ]
 
         self.currentTextIndex: int = 0
 

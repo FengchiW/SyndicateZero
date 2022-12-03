@@ -7,3 +7,6 @@ Cpp/includes/rapidjson
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+Scripts/
+Lib/
+Include/
