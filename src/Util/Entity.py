@@ -1,5 +1,5 @@
 import pyray as pr
-from .GameObjects import distanceBetweenTiles, Tile
+from .Tile import distanceBetweenTiles, Tile
 import math
 from pyray import Color, Vector2
 from typing import Optional, Any
@@ -172,7 +172,6 @@ class Card(Entity):
                     pr.Vector2(tile.collisionShape.x, tile.collisionShape.y),
                     tile.collisionShape.radius, tile.collisionShape.radius,
                     tile, player, self)
-        tile.isOccupied = True
         tile.occupant = unit
         return unit
 

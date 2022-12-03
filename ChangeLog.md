@@ -329,3 +329,12 @@ Post Version 1.1.5, this project adheres to [Semantic Versioning](https://semver
   - Fixed issues with scene transitions and circular dependencies
 ### Removed
   - Removed the old way unit spawning worked
+
+
+## [1.4.0.2] - 2022-12-03
+### Added
+  - Added a map component
+### Changed
+  - Change how the tiles work
+### Fixed
+  - Fixed some issues with movement in the Hexagonal grid

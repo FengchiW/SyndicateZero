@@ -1,9 +1,9 @@
 {
   "Name": "SyndicateZero",
   "ExecutableName": "SyndicateZero.exe",
-  "version": "1.2.3.0",
+  "version": "1.3.0.1",
   "Description": "TBD",
   "Author": "Wilson Fengchi Wang",
   "URL": "TBD",
-  "lastChange": "2022-11-25"
+  "lastChange": "2022-12-03"
 }

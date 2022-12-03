@@ -1,6 +1,7 @@
 import pyray as pr
 from typing import TYPE_CHECKING, Any
 import json
+from .util import Card
 if TYPE_CHECKING:
     from SceneManager import SceneManager
 
@@ -14,7 +15,7 @@ class Resource():
 class ResourceManager():
     def __init__(self, sceneManager: 'SceneManager') -> None:
         self.textures: dict[str, pr.Texture] = {}
-        self.cards:    dict[str, str] = {}
+        self.cards:    dict[str, Card] = {}
         self.sounds:   dict[str, pr.Sound] = {}
         self.music:    dict[str, pr.Music] = {}
         self.fonts:    dict[str, pr.Font] = {}
@@ -25,10 +26,13 @@ class ResourceManager():
         self.load_font('assets/Roboto-Regular.ttf', 'missing')
         self.load_card('Data/Cards/missing.json', 'missing')
 
-    def fetch_card(self, key: str) -> dict[str, Any]:
+    def fetch_card(self, key: str) -> Card:
         if key in self.cards:
-            return json.loads(self.cards[key])
-        return json.loads(self.cards['missing'])
+            return self.cards[key]
+        return self.cards['missing']
+
+    def fetch_map(self, key: str) -> pr.Texture:
+        return self.textures[key]
 
     def fetch_texture(self, key: str) -> pr.Texture:
         if key in self.textures:
@@ -72,7 +76,7 @@ class ResourceManager():
     def load_card(self, path: str, key: str) -> None:
         if (key not in self.textures):
             if (pr.file_exists(path)):
-                self.cards[key] = pr.load_file_text(path)
+                self.cards[key] = Card(json.loads(pr.load_file_text(path)))
                 self.sm.logMessage(f"Loaded card {key} from {path}")
             else:
                 self.sm.logMessage(f"Failed to load card {path}", 2)

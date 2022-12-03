@@ -1,6 +1,7 @@
 import pyray as pr
 from ..SceneManager import SceneManager, Scene
-from ..util import Unit, Tile, Button, distanceBetweenTiles, Card, Board
+from ..util import Unit, Tile, Button, distanceBetweenTiles, Card
+from ..util import Map
 from threading import Thread
 from . import MainMenu
 
@@ -24,7 +25,7 @@ class GameScene(Scene):
         sm.rm.load_card('Data/Cards/Cavalry.json', 'cavalry')
         sm.rm.load_card('Data/Cards/King.json', 'king')
 
-        self.board:        Board = Board(BOARD_WIDTH, BOARD_HEIGHT, 50)
+        self.board:        Map = Map(BOARD_WIDTH, BOARD_HEIGHT, 50)
         self.screenWidth:  int = sw
         self.screenHeight: int = sh
         self.turn:         int = 0
@@ -144,14 +145,12 @@ class GameScene(Scene):
                 if unit.player == 1:
                     # find closest enemy unit
                     closestUnit = None
-                    for u in self.units:
-                        if u.player == 0:
-                            if closestUnit is None:
-                                closestUnit = u
-                            elif (distanceBetweenTiles(unit.tile, u.tile) <
-                                  distanceBetweenTiles(closestUnit.tile,
-                                                       u.tile)):
-                                closestUnit = u
+                    playerUnits = [u for u in self.units if u.player == 0]
+                    for u in playerUnits:
+                        if closestUnit is None:
+                            closestUnit = u
+                        elif (distanceBetweenTiles(unit.tile, u.tile) < distanceBetweenTiles(closestUnit.tile, u.tile)):
+                            closestUnit = u
                     if closestUnit is not None:
                         # make a legal move towards the closest enemy unit
                         bestMove = None
