@@ -6,7 +6,7 @@
         "tree": "tree.png"
     },
     "map": {
-        "width": 10,
+        "width": 20,
         "height": 10,
         "layers": [
             {

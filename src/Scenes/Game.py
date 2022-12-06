@@ -1,6 +1,6 @@
 import pyray as pr
 from ..SceneManager import SceneManager, Scene
-from ..util import Unit, Tile, Button, distanceBetweenTiles, Card
+from ..util import Unit, Tile, Button, Card
 from ..util import Map
 from threading import Thread
 from . import MainMenu
@@ -8,10 +8,6 @@ from . import MainMenu
 from pyray import check_collision_point_rec as checkCollision
 from pyray import Color
 from typing import Optional
-
-
-BOARD_WIDTH = 15
-BOARD_HEIGHT = 8
 
 
 class GameScene(Scene):
@@ -24,8 +20,9 @@ class GameScene(Scene):
         sm.rm.load_card('Data/Cards/Archer.json', 'archer')
         sm.rm.load_card('Data/Cards/Cavalry.json', 'cavalry')
         sm.rm.load_card('Data/Cards/King.json', 'king')
+        sm.rm.load_map('Data/Maps/Map1.json', 'map1')
 
-        self.board:        Map = Map(BOARD_WIDTH, BOARD_HEIGHT, 50)
+        self.board:        Map = sm.rm.fetch_map('map1')
         self.screenWidth:  int = sw
         self.screenHeight: int = sh
         self.turn:         int = 0
@@ -34,14 +31,16 @@ class GameScene(Scene):
         self.hand:         list[Card] = []
         self.opponentHand: list[Card] = []
         self.opponentDeck: list[Card] = [
-            Card(sm.rm.fetch_card('warrior')) for _ in range(10)
+            sm.rm.fetch_card('warrior') for _ in range(10)
         ]
         self.deck:         list[Card] = [
-            Card(sm.rm.fetch_card('warrior')),
-            Card(sm.rm.fetch_card('archer')),
-            Card(sm.rm.fetch_card('warrior')),
-            Card(sm.rm.fetch_card('warrior')),
-            Card(sm.rm.fetch_card('archer')),
+            sm.rm.fetch_card('warrior'),
+            sm.rm.fetch_card('archer'),
+            sm.rm.fetch_card('cavalry'),
+            sm.rm.fetch_card('cavalry'),
+            sm.rm.fetch_card('warrior'),
+            sm.rm.fetch_card('warrior'),
+            sm.rm.fetch_card('archer'),
         ]
         self.selectedUnit: Optional[Unit] = None
         self.gold:         int = 1
@@ -53,32 +52,36 @@ class GameScene(Scene):
                                     lambda: self.triggerEndTurn())
 
         self.spawnUnit = 'warrior'
-        boardViewPortSize: tuple[int, int] = (sw, (sh * 3) // 4)
-        self.tileSize:          float = boardViewPortSize[0] / BOARD_WIDTH
+        self.tileSize:          float = 50
 
         # Camera
         self.camera: pr.Camera2D = pr.Camera2D(
-            pr.Vector2(self.tileSize, 0),
+            pr.Vector2(0, 0),
             pr.Vector2(0, 0),
             0,
             1
         )
 
-        self.cameraTarget = pr.Vector2(self.tileSize, 0)
+        self.cameraTarget = pr.Vector2(-self.tileSize * 2, -self.tileSize * 2)
         self.cameraZoom = 1
 
         # kings
-        self.units.append(
-            Card(sm.rm.fetch_card('king')).summonCard(self.board[0, 0], 0)
-        )
-        self.board[0, 0].occupant = self.units[0]
+        KingLoc1 = self.board[0, 0]
 
-        self.units.append(
-            Card(sm.rm.fetch_card('king')).summonCard(self.board[10, 0], 1)
-        )
-        self.board[10, 0].occupant = self.units[1]
-        self.playerKing = self.units[0]
-        self.enemyKing = self.units[1]
+        if KingLoc1 is not None:
+            self.playerKing = sm.rm.fetch_card('king').summonCard(KingLoc1, 0)
+            self.units.append(
+                self.playerKing
+            )
+            KingLoc1.occupant = self.units[0]
+
+        KingLoc2 = self.board[0, 9]
+        if KingLoc2 is not None:
+            self.enemyKing = sm.rm.fetch_card('king').summonCard(KingLoc2, 1)
+            self.units.append(
+                self.enemyKing
+            )
+            KingLoc2.occupant = self.units[0]
 
         # draw cards
         for _ in range(3):
@@ -141,29 +144,29 @@ class GameScene(Scene):
             self.endTurn()
         elif self.currentPhase == "Enemy Summon":
             self.currentPhase = "Enemy Move"
-            for unit in self.units:
-                if unit.player == 1:
-                    # find closest enemy unit
-                    closestUnit = None
-                    playerUnits = [u for u in self.units if u.player == 0]
-                    for u in playerUnits:
-                        if closestUnit is None:
-                            closestUnit = u
-                        elif (distanceBetweenTiles(unit.tile, u.tile) < distanceBetweenTiles(closestUnit.tile, u.tile)):
-                            closestUnit = u
-                    if closestUnit is not None:
-                        # make a legal move towards the closest enemy unit
-                        bestMove = None
-                        for tile in self.board:
-                            if unit.canMoveToTile(tile):
-                                if bestMove is None:
-                                    bestMove = tile
-                                elif (distanceBetweenTiles(tile, closestUnit.tile)
-                                        < distanceBetweenTiles(bestMove, closestUnit.tile)):
-                                    bestMove = tile
+            enemyUnits = [unit for unit in self.units if unit.player == 1]
 
-                        if bestMove is not None:
-                            unit.move(bestMove)
+            for unit in enemyUnits:
+                # find closest enemy unit
+                closestUnit = None
+                playerUnits = [u for u in self.units if u.player == 0]
+                for u in playerUnits:
+                    if closestUnit is None:
+                        closestUnit = u
+                    elif (self.board.getDistanceBetweenTiles(unit.tile, u.tile)
+                            < self.board.getDistanceBetweenTiles(unit.tile, closestUnit.tile)):
+                        closestUnit = u
+                if closestUnit is not None:
+                    # make a legal move closest to the closest enemy unit
+                    bestMove: Optional[tuple[Tile, int]] = None
+                    for move, dist in unit.getLegalMoves(self.board):
+                        if bestMove is None:
+                            bestMove = (move, dist)
+                        elif dist < self.board.getDistanceBetweenTiles(move, closestUnit.tile):
+                            bestMove = (move, dist)
+
+                    if bestMove is not None:
+                        unit.move(bestMove[0], bestMove[1])
 
             self.endTurn()
         elif self.currentPhase == "Enemy Move":
@@ -172,7 +175,7 @@ class GameScene(Scene):
                 if unit.player == 1:
                     for tile in self.board:
                         if tile.occupant and tile.occupant.player == 0:
-                            if unit.canAttackUnit(tile.occupant):
+                            if unit.canAttackUnit(tile.occupant, self.board):
                                 unit.attackUnit(tile.occupant)
             if self.playerKing.health <= 0:
                 self._sm.logMessage("You lose!")
@@ -257,7 +260,6 @@ class GameScene(Scene):
         isATileHovered = False
         for tile in self.board:
             tile.hovered = False
-            # TODO: fix this
             if tile.collisionShape.checkCollisionPoint(mouseWorld):
                 tile.hovered = True
                 isATileHovered = True
@@ -283,7 +285,7 @@ class GameScene(Scene):
                         canAttack = False
                         for tile in self.board:
                             if tile.occupant and tile.occupant.player == 1:
-                                if unit.canAttackUnit(tile.occupant):
+                                if unit.canAttackUnit(tile.occupant, self.board):
                                     canAttack = True
                         if ((not unit.hasAttacked) and canAttack):
                             hasAllUnitsMoved = False
@@ -304,6 +306,20 @@ class GameScene(Scene):
             self.camera.zoom = pr.lerp(self.camera.zoom,
                                        self.cameraZoom, 10 * deltaTime)
 
+        if self.cameraTarget.x < self.camera.target.x:
+            self.camera.target.x = pr.lerp(self.camera.target.x,
+                                           self.cameraTarget.x, 10 * deltaTime)
+        elif self.cameraTarget.x > self.camera.target.x:
+            self.camera.target.x = pr.lerp(self.camera.target.x,
+                                           self.cameraTarget.x, 10 * deltaTime)
+        
+        if self.cameraTarget.y < self.camera.target.y:
+            self.camera.target.y = pr.lerp(self.camera.target.y,
+                                           self.cameraTarget.y, 10 * deltaTime)
+        elif self.cameraTarget.y > self.camera.target.y:
+            self.camera.target.y = pr.lerp(self.camera.target.y,
+                                           self.cameraTarget.y, 10 * deltaTime)
+
     def draw(self) -> None:
         super().draw()
         pr.clear_background(Color(20, 100, 20, 255))
@@ -312,6 +328,15 @@ class GameScene(Scene):
 
     def handle_input(self) -> None:
         super().handle_input()
+
+        if pr.is_key_down(pr.KEY_W) or pr.is_key_down(pr.KEY_UP):
+            self.cameraTarget.y -= 5
+        if pr.is_key_down(pr.KEY_S) or pr.is_key_down(pr.KEY_DOWN):
+            self.cameraTarget.y += 5
+        if pr.is_key_down(pr.KEY_A) or pr.is_key_down(pr.KEY_LEFT):
+            self.cameraTarget.x -= 5
+        if pr.is_key_down(pr.KEY_D) or pr.is_key_down(pr.KEY_RIGHT):
+            self.cameraTarget.x += 5
 
         if pr.get_mouse_wheel_move() > 0:
             self.cameraZoom += 0.1
@@ -362,21 +387,19 @@ class GameScene(Scene):
                         if pr.is_mouse_button_pressed(pr.MOUSE_LEFT_BUTTON):
                             self.selectedUnit = unit
                             for tile in self.board:
-                                if self.selectedUnit.canMoveToTile(tile):
-                                    tile.highlighted = True
-                                else:
-                                    tile.highlighted = False
+                                tile.highlighted = False
+                            for tile, _ in self.selectedUnit.getLegalMoves(self.board):
+                                tile.highlighted = True
                             break
-            if (self.selectedUnit):
-                for tile in self.board:
+            if (self.selectedUnit is not None):
+                legalMoves = self.selectedUnit.getLegalMoves(self.board)
+                for tile, dist in legalMoves:
                     if tile.collisionShape.checkCollisionPoint(mouseWorldPos):
                         if pr.is_mouse_button_pressed(pr.MOUSE_LEFT_BUTTON):
-                            if self.selectedUnit.canMoveToTile(tile):
-                                self.selectedUnit.move(tile)
-                                self.selectedUnit = None
-                                for tile in self.board:
-                                    tile.highlighted = False
-                                break
+                            self.selectedUnit.move(tile, dist)
+                            self.selectedUnit = None
+                            for tile, _ in legalMoves:
+                                tile.highlighted = False
         elif self.currentPhase == "Attack":
             for unit in self.units:
                 if unit.player == 0:

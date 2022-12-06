@@ -9,16 +9,17 @@ if TYPE_CHECKING:
 
 class Tile:
     def __init__(self, x: int, y: int, radius: float,
-                 position: Vector2, type: str = "Empty", bg: str = "Empty") -> None:
+                 position: Vector2, movementCost: int = 0, bg: str = "Empty") -> None:
         self.x:              int = x
         self.y:              int = y
+        self.position:       Vector2 = position
         self.collisionShape: Hexagon = Hexagon(
             position, radius, Color(0, 0, 0, 50)
         )
         self.occupant:       Optional["Unit"] = None
         self.hovered:        bool = False
         self.highlighted:    bool = False
-        self.type:           str = type
+        self.movementCost:   int = movementCost
         self.background:     str = bg
 
     def draw(self) -> None:
@@ -44,16 +45,3 @@ class Tile:
                 Color(0, 255, 0, 100)
             )
         self.collisionShape.draw()
-
-
-# returns the number of tiles between two tiles
-def distanceBetweenTiles(tile1: Tile, tile2: Tile) -> int:
-    q1 = tile1.x
-    r1 = tile1.y - (tile1.x - (tile1.x & 1)) // 2
-    s1 = - q1 - r1
-
-    q2 = tile2.x
-    r2 = tile2.y - (tile2.x - (tile2.x & 1)) // 2
-    s2 = - q2 - r2
-
-    return max(abs(q1 - q2), abs(r1 - r2), abs(s1 - s2))

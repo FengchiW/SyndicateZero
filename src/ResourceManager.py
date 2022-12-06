@@ -1,20 +1,21 @@
 import pyray as pr
 from typing import TYPE_CHECKING, Any
 import json
-from .util import Card
+from .util import Card, Map
 if TYPE_CHECKING:
     from SceneManager import SceneManager
 
 
-class Resource():
-    def __init__(self, key: str, path: str):
-        self.key:  str = key
+class Resource:
+    def __init__(self, name: str, path: str) -> None:
+        self.name: str = name
         self.path: str = path
 
 
 class ResourceManager():
     def __init__(self, sceneManager: 'SceneManager') -> None:
         self.textures: dict[str, pr.Texture] = {}
+        self.maps:     dict[str, Map] = {}
         self.cards:    dict[str, Card] = {}
         self.sounds:   dict[str, pr.Sound] = {}
         self.music:    dict[str, pr.Music] = {}
@@ -31,8 +32,8 @@ class ResourceManager():
             return self.cards[key]
         return self.cards['missing']
 
-    def fetch_map(self, key: str) -> pr.Texture:
-        return self.textures[key]
+    def fetch_map(self, key: str) -> Map:
+        return self.maps[key]
 
     def fetch_texture(self, key: str) -> pr.Texture:
         if key in self.textures:
@@ -80,6 +81,14 @@ class ResourceManager():
                 self.sm.logMessage(f"Loaded card {key} from {path}")
             else:
                 self.sm.logMessage(f"Failed to load card {path}", 2)
+
+    def load_map(self, path: str, key: str) -> None:
+        if key not in self.maps:
+            if pr.file_exists(path):
+                self.maps[key] = Map(json.loads(pr.load_file_text(path)))
+                self.sm.logMessage(f"Loaded map {key} from {path}")
+            else:
+                self.sm.logMessage(f"Failed to load map {path}", 2)
 
     def unload_texture(self, key: str) -> None:
         if key in self.textures:

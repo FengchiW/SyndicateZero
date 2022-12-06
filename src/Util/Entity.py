@@ -1,8 +1,9 @@
 import pyray as pr
-from .Tile import distanceBetweenTiles, Tile
+from .Tile import Tile
 import math
 from pyray import Color, Vector2
 from typing import Optional, Any
+from .Map import Map
 
 
 class Entity():
@@ -38,10 +39,10 @@ class Unit(Entity):
         self.hasAttacked: bool = False
         self.card:       'Card' = card
         self.target:    Vector2 = position
-        self.rect: pr.Rectangle = pr.Rectangle(position.x, position.y,
+        self.rect: pr.Rectangle = pr.Rectangle(position.x - width // 2, position.y - height // 2,
                                                width, height)
 
-        self.textLength: int = pr.measure_text(self.type, 20)
+        self.textLength: int = pr.measure_text(self.type[0], 20)
 
     def draw(self):
         super().draw()
@@ -53,7 +54,7 @@ class Unit(Entity):
         pr.draw_rectangle_rec(self.rect, color)
         textX = self.rect.x + (self.rect.width // 2) - self.textLength // 2
         textY = self.rect.y + (self.rect.height // 2) - 10
-        pr.draw_text(self.type, int(textX), int(textY), 20,
+        pr.draw_text(self.type[0], int(textX), int(textY), 20,
                      Color(255, 255, 255, 255))
 
         # Health Text
@@ -61,28 +62,20 @@ class Unit(Entity):
                      int(self.rect.x), int(self.rect.y), 20,
                      Color(255, 255, 255, 255))
 
-    def move(self, tile: Tile) -> bool:
-        if self.canMoveToTile(tile):
-            distance = round(math.sqrt(distanceBetweenTiles(self.tile, tile)))
-            self.tile.occupant = None
-            tile.occupant = self
-            self.tile = tile
-            self.target = Vector2(tile.collisionShape.x, tile.collisionShape.y)
-            self.moves -= distance
-            return True
-        return False
+    def move(self, tile: Tile, dist: int) -> None:
+        self.tile.occupant = None
+        self.tile = tile
+        tile.occupant = self
+        self.moves -= dist
+        self.target = tile.position
 
-    def canMoveToTile(self, tile: Tile) -> bool:
-        if tile.occupant:
-            return False
-        if (distanceBetweenTiles(self.tile, tile) <= (self.moves ** 2)):
-            return True
-        return False
+    def getLegalMoves(self, board: Map) -> list[tuple[Tile, int]]:
+        return board.getTilesInMovingRange(self.tile, self.moves)
 
-    def canAttackUnit(self, unit: Optional['Unit']) -> bool:
+    def canAttackUnit(self, unit: Optional['Unit'], board: Map) -> bool:
         if unit is None:
             return False
-        if (distanceBetweenTiles(self.tile, unit.tile) <= (self.attack ** 2)
+        if (board.getTilesInRange(self.tile, self.range).__contains__(unit.tile)
             and self.player != unit.player
                 and not self.hasAttacked):
             return True
@@ -99,8 +92,8 @@ class Unit(Entity):
     def update(self, deltaTime: float) -> None:
         super().update(deltaTime)
         if (self.target.x != self.rect.x or self.target.y != self.rect.y):
-            self.rect.x = pr.lerp(self.rect.x, self.target.x, deltaTime * 10)
-            self.rect.y = pr.lerp(self.rect.y, self.target.y, deltaTime * 10)
+            self.rect.x = pr.lerp(self.rect.x, self.target.x - self.rect.width / 2, deltaTime * 10)
+            self.rect.y = pr.lerp(self.rect.y, self.target.y - self.rect.height / 2, deltaTime * 10)
 
 
 class Card(Entity):

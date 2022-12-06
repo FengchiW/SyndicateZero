@@ -58,30 +58,31 @@ def main():
                 f"zip -r {zipName} {execPath} {resPath}")
 
         versionAsString = f"{major}.{minor}.{patch}.{build}"
+        currentData["version"] = versionAsString
         changeMessage = ""
 
-        addedChanges = []
+        addedChanges: list[str] = []
         addedChange = input("Added changes (d/Done to finish): ")
         while (addedChange != "d" and addedChange != "D"
                and addedChange != "done" and addedChange != "Done"):
             addedChanges.append(addedChange)
             addedChange = input("Added changes (d/Done to finish): ")
 
-        changedChanges = []
+        changedChanges: list[str] = []
         changedChange = input("Changed changes (d/Done to finish): ")
         while (changedChange != "d" and changedChange != "D"
                 and changedChange != "done" and changedChange != "Done"):
             changedChanges.append(changedChange)
             changedChange = input("Changed changes (d/Done to finish): ")
 
-        fixedChanges = []
+        fixedChanges: list[str] = []
         fixedChange = input("Fixed changes (d/Done to finish): ")
         while (fixedChange != "d" and fixedChange != "D"
                 and fixedChange != "done" and fixedChange != "Done"):
             fixedChanges.append(fixedChange)
             fixedChange = input("Fixed changes (d/Done to finish): ")
 
-        removedChanges = []
+        removedChanges: list[str] = []
         removedChange = input("Removed changes (d/Done to finish): ")
         while (removedChange != "d" and removedChange != "D"
                 and removedChange != "done" and removedChange != "Done"):

@@ -338,3 +338,21 @@ Post Version 1.1.5, this project adheres to [Semantic Versioning](https://semver
   - Change how the tiles work
 ### Fixed
   - Fixed some issues with movement in the Hexagonal grid
+
+
+## [1.4.1.2] - 2022-12-03
+### Fixed
+  - Fixed the Updater
+
+
+## [1.4.2.2] - 2022-12-06
+### Added
+  - Added a new movement mechanic
+  - Added a map class
+  - Added the abillity to make maps and read them
+### Changed
+  - The file structure
+### Fixed
+  - Many bugs related to movement
+### Removed
+  - Removed old Movement system
