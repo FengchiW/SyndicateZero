@@ -291,68 +291,105 @@ Post Version 1.1.5, this project adheres to [Semantic Versioning](https://semver
 
 - Moved output build into its own place under builds
 
-
 ## [1.2.3.1] - 2022-11-14
-### Changed
-  - Updated the updater again fixed several bugs
 
+### Changed
+
+- Updated the updater again fixed several bugs
 
 ## [1.3.0.1] - 2022-11-14
-### Added
-  - Added new threading system to the AI so it doesn't freeze the game
-### Fixed
-  - Fixed issues with call back and buttons
-### Removed
-  - Removed all asyncronous functionallity of the game
 
+### Added
+
+- Added new threading system to the AI so it doesn't freeze the game
+
+### Fixed
+
+- Fixed issues with call back and buttons
+
+### Removed
+
+- Removed all asyncronous functionallity of the game
 
 ## [1.3.0.1] - 2022-11-20
-### Added
-  - Added a lot of new features to the gameplay system
-  - Added many type hints to improve code readabillity
-### Fixed
-  - Fixed many issues with imports
-### Removed
-  - Removed unneeded asyncronous code
 
+### Added
+
+- Added a lot of new features to the gameplay system
+- Added many type hints to improve code readabillity
+
+### Fixed
+
+- Fixed many issues with imports
+
+### Removed
+
+- Removed unneeded asyncronous code
 
 ## [1.2.4.1] - 2022-11-20
 
-
 ## [1.3.0.1] - 2022-11-25
-### Added
-  - Added Cards!
-  - Added Camera
-### Changed
-  - Changed how spawning works to cards spawning
-### Fixed
-  - Fixed issues with scene transitions and circular dependencies
-### Removed
-  - Removed the old way unit spawning worked
 
+### Added
+
+- Added Cards!
+- Added Camera
+
+### Changed
+
+- Changed how spawning works to cards spawning
+
+### Fixed
+
+- Fixed issues with scene transitions and circular dependencies
+
+### Removed
+
+- Removed the old way unit spawning worked
 
 ## [1.4.0.2] - 2022-12-03
-### Added
-  - Added a map component
-### Changed
-  - Change how the tiles work
-### Fixed
-  - Fixed some issues with movement in the Hexagonal grid
 
+### Added
+
+- Added a map component
+
+### Changed
+
+- Change how the tiles work
+
+### Fixed
+
+- Fixed some issues with movement in the Hexagonal grid
 
 ## [1.4.1.2] - 2022-12-03
-### Fixed
-  - Fixed the Updater
 
+### Fixed
+
+- Fixed the Updater
 
 ## [1.4.2.2] - 2022-12-06
+
 ### Added
-  - Added a new movement mechanic
-  - Added a map class
-  - Added the abillity to make maps and read them
+
+- Added a new movement mechanic
+- Added a map class
+- Added the abillity to make maps and read them
+
 ### Changed
-  - The file structure
+
+- The file structure
+
 ### Fixed
-  - Many bugs related to movement
+
+- Many bugs related to movement
+
 ### Removed
-  - Removed old Movement system
+
+- Removed old Movement system
+
+
+## [1.4.3.3] - 2022-12-07
+### Changed
+  - Moved the file structure for units and cards
+### Fixed
+  - Fixed some more typing issues
