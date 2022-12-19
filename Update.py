@@ -100,17 +100,17 @@ def main():
                 f"\n\n## [{versionAsString}] - {currentData['lastChange']}\n")
 
             if (len(addedChanges) > 0):
-                f.write("### Added\n")
+                f.write("### Added\n\n")
                 for change in addedChanges:
                     f.write(f"  - {change}\n")
 
             if (len(changedChanges) > 0):
-                f.write("### Changed\n")
+                f.write("### Changed\n\n")
                 for change in changedChanges:
                     f.write(f"  - {change}\n")
 
             if (len(fixedChanges) > 0):
-                f.write("### Fixed\n")
+                f.write("### Fixed\n\n")
                 for change in fixedChanges:
                     f.write(f"  - {change}\n")
 

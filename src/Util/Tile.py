@@ -4,7 +4,7 @@ from typing import Optional
 from typing import TYPE_CHECKING
 from .Shapes import Hexagon
 if TYPE_CHECKING:
-    from .Entity import Unit
+    from .Unit import Unit
 
 
 class Tile:

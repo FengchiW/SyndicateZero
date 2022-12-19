@@ -1,15 +1,27 @@
 import pyray as pr
 from typing import TYPE_CHECKING, Any
 import json
+from enum import Enum
 from .util import Card, Map
 if TYPE_CHECKING:
     from SceneManager import SceneManager
 
 
+class ResourceType(Enum):
+    TEXTURE = 0
+    MAP = 1
+    CARD = 2
+    SOUND = 3
+    MUSIC = 4
+    FONT = 5
+    LOCALE = 6
+
+
 class Resource:
-    def __init__(self, name: str, path: str) -> None:
+    def __init__(self, name: str, path: str, Type: ResourceType) -> None:
         self.name: str = name
         self.path: str = path
+        self.Type: ResourceType = Type
 
 
 class ResourceManager():
@@ -26,6 +38,24 @@ class ResourceManager():
         self.load_texture('assets/missing.png', 'missing')
         self.load_font('assets/Roboto-Regular.ttf', 'missing')
         self.load_card('Data/Cards/missing.json', 'missing')
+
+    def load_resource(self, resource: Resource) -> None:
+        if resource.Type == ResourceType.TEXTURE:
+            self.load_texture(resource.path, resource.name)
+        elif resource.Type == ResourceType.MAP:
+            self.load_map(resource.path, resource.name)
+        elif resource.Type == ResourceType.CARD:
+            self.load_card(resource.path, resource.name)
+        elif resource.Type == ResourceType.SOUND:
+            self.load_sound(resource.path, resource.name)
+        elif resource.Type == ResourceType.MUSIC:
+            self.load_music(resource.path, resource.name)
+        elif resource.Type == ResourceType.FONT:
+            self.load_font(resource.path, resource.name)
+        elif resource.Type == ResourceType.LOCALE:
+            self.load_locale(resource.path, resource.name)
+        else:
+            self.sm.logMessage(f"Unknown resource type: {resource.Type}")
 
     def fetch_card(self, key: str) -> Card:
         if key in self.cards:
@@ -70,7 +100,7 @@ class ResourceManager():
         if path not in self.fonts:
             self.fonts[path] = pr.load_font(path)
 
-    def load_locales(self, path: str, key: str) -> None:
+    def load_locale(self, path: str, key: str) -> None:
         # Nothing yet
         pass
 

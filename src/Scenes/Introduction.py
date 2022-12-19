@@ -7,7 +7,7 @@ from . import Game
 
 class IntroScene(Scene):
     def __init__(self, sm: SceneManager) -> None:
-        super().__init__(sm)
+        super().__init__(sm, "IntroScene")
         # shogun
         self.text = [
             f'Hello, {sm.sceneData["player"]["name"]}. Welcome to the '
@@ -36,6 +36,8 @@ class IntroScene(Scene):
             "Next",
             lambda: self.next()
         )
+
+        self.isLoaded = True
 
     def next(self):
         self.currentTextIndex += 1

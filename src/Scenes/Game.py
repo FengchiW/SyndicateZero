@@ -13,16 +13,14 @@ from typing import Optional
 class GameScene(Scene):
     def __init__(self, sm: SceneManager) -> None:
         super().__init__(sm, "Game")
+
+    def onLoad(self):
+        self.isLoaded = True
+        self._sm.logMessage("Welcome to the game!")
         sw:           int = pr.get_screen_width()
         sh:           int = pr.get_screen_height()
-        sm.rm.load_card('Data/Cards/Warrior.json', 'warrior')
-        sm.rm.load_card('Data/Cards/Tank.json', 'tank')
-        sm.rm.load_card('Data/Cards/Archer.json', 'archer')
-        sm.rm.load_card('Data/Cards/Cavalry.json', 'cavalry')
-        sm.rm.load_card('Data/Cards/King.json', 'king')
-        sm.rm.load_map('Data/Maps/Map1.json', 'map1')
 
-        self.board:        Map = sm.rm.fetch_map('map1')
+        self.board:        Map = self._sm.rm.fetch_map('map1')
         self.screenWidth:  int = sw
         self.screenHeight: int = sh
         self.turn:         int = 0
@@ -31,16 +29,16 @@ class GameScene(Scene):
         self.hand:         list[Card] = []
         self.opponentHand: list[Card] = []
         self.opponentDeck: list[Card] = [
-            sm.rm.fetch_card('warrior') for _ in range(10)
+            self._sm.rm.fetch_card('warrior') for _ in range(10)
         ]
         self.deck:         list[Card] = [
-            sm.rm.fetch_card('warrior'),
-            sm.rm.fetch_card('archer'),
-            sm.rm.fetch_card('cavalry'),
-            sm.rm.fetch_card('cavalry'),
-            sm.rm.fetch_card('warrior'),
-            sm.rm.fetch_card('warrior'),
-            sm.rm.fetch_card('archer'),
+            self._sm.rm.fetch_card('warrior'),
+            self._sm.rm.fetch_card('archer'),
+            self._sm.rm.fetch_card('cavalry'),
+            self._sm.rm.fetch_card('cavalry'),
+            self._sm.rm.fetch_card('warrior'),
+            self._sm.rm.fetch_card('warrior'),
+            self._sm.rm.fetch_card('archer'),
         ]
         self.selectedUnit: Optional[Unit] = None
         self.gold:         int = 1
@@ -69,7 +67,7 @@ class GameScene(Scene):
         KingLoc1 = self.board[0, 0]
 
         if KingLoc1 is not None:
-            self.playerKing = sm.rm.fetch_card('king').summonCard(KingLoc1, 0)
+            self.playerKing = self._sm.rm.fetch_card('king').summonCard(KingLoc1, 0)
             self.units.append(
                 self.playerKing
             )
@@ -77,7 +75,7 @@ class GameScene(Scene):
 
         KingLoc2 = self.board[0, 9]
         if KingLoc2 is not None:
-            self.enemyKing = sm.rm.fetch_card('king').summonCard(KingLoc2, 1)
+            self.enemyKing = self._sm.rm.fetch_card('king').summonCard(KingLoc2, 1)
             self.units.append(
                 self.enemyKing
             )
@@ -123,8 +121,6 @@ class GameScene(Scene):
             for unit in self.units:
                 if unit.player == 1:
                     unit.reset()
-            if self.enemyKing:
-                pass
             self.endTurnButton.text = "Attack"
         elif self.currentPhase == "Attack":
             self.endTurnButton.text = "Waiting..."
@@ -312,7 +308,7 @@ class GameScene(Scene):
         elif self.cameraTarget.x > self.camera.target.x:
             self.camera.target.x = pr.lerp(self.camera.target.x,
                                            self.cameraTarget.x, 10 * deltaTime)
-        
+
         if self.cameraTarget.y < self.camera.target.y:
             self.camera.target.y = pr.lerp(self.camera.target.y,
                                            self.cameraTarget.y, 10 * deltaTime)
@@ -391,11 +387,13 @@ class GameScene(Scene):
                             for tile, _ in self.selectedUnit.getLegalMoves(self.board):
                                 tile.highlighted = True
                             break
-            if (self.selectedUnit is not None):
+            if (self.selectedUnit):
                 legalMoves = self.selectedUnit.getLegalMoves(self.board)
                 for tile, dist in legalMoves:
                     if tile.collisionShape.checkCollisionPoint(mouseWorldPos):
                         if pr.is_mouse_button_pressed(pr.MOUSE_LEFT_BUTTON):
+                            if (not self.selectedUnit):
+                                break
                             self.selectedUnit.move(tile, dist)
                             self.selectedUnit = None
                             for tile, _ in legalMoves:
@@ -411,11 +409,9 @@ class GameScene(Scene):
                 for unit in self.units:
                     if checkCollision(pr.get_mouse_position(), unit.rect):
                         if pr.is_mouse_button_pressed(pr.MOUSE_LEFT_BUTTON):
-                            if self.selectedUnit.canAttackUnit(unit):
+                            if self.selectedUnit.canAttackUnit(unit, self.board):
                                 self.selectedUnit.attackUnit(unit)
                                 self.selectedUnit = None
                                 break
-        else:
-            pass
 
         self.endTurnButton.handle_input(pr.get_mouse_position())

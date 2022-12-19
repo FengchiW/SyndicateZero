@@ -1,14 +1,19 @@
 from ..SceneManager import Scene
 from ..util import Button
+from .Loading import LoadingScene
 from .Game import GameScene
 from ..SceneManager import SceneManager
 import pyray as pr
 from pyray import Color
 
+from ..ResourceManager import Resource, ResourceType
+
 
 class LeaderSelectScene(Scene):
     def __init__(self, sm: SceneManager) -> None:
-        super().__init__(sm)
+        super().__init__(sm, "LeaderSelectScene")
+
+        self.isLoaded = True
         self.title:       str = "Select a Leader"
         self.titleLength: int = pr.measure_text(self.title, 50)
         self.width:       int = pr.get_screen_width()
@@ -17,6 +22,15 @@ class LeaderSelectScene(Scene):
         buttonWidth:      int = self.width // 3 - 25
         buttonY:          int = self.height // 6
 
+        gameResources: list[Resource] = [
+            Resource("warrior", "Data/Cards/Warrior.json", ResourceType.CARD),
+            Resource("tank", "Data/Cards/Tank.json", ResourceType.CARD),
+            Resource("archer", "Data/Cards/Archer.json", ResourceType.CARD),
+            Resource("cavalry", "Data/Cards/Cavalry.json", ResourceType.CARD),
+            Resource("king", "Data/Cards/King.json", ResourceType.CARD),
+            Resource("map1", "Data/Maps/Map1.json", ResourceType.MAP),
+        ]
+
         def getButtonX(i: int) -> int:
             return ((self.width - 25) * i // 3) - buttonWidth
 
@@ -24,7 +38,7 @@ class LeaderSelectScene(Scene):
             Button(getButtonX(1), buttonY, buttonWidth, buttonHeight,
                    "Daddy",
                    lambda: self._sm.changeScene(
-                GameScene(self._sm)
+                LoadingScene(self._sm, gameResources, GameScene(self._sm))
             )),
             Button(getButtonX(2), buttonY, buttonWidth, buttonHeight,
                    "Leader 2",
@@ -38,6 +52,9 @@ class LeaderSelectScene(Scene):
             ), True),
 
         ]
+    
+    def onLoad(self) -> None:
+        return super().onLoad()
 
     def update(self, deltaTime: float) -> None:
         super().update(deltaTime)

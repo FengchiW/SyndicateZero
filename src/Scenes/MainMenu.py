@@ -1,6 +1,6 @@
 import pyray as pr
 
-from . import Naming
+from . import LeaderSelect as LS
 from ..SceneManager import Scene, SceneManager
 from ..util import Button
 from pyray import Color, Vector2
@@ -33,6 +33,10 @@ class MainMenu(Scene):
             Button(getButtonX(4), buttonY, buttonWidth, buttonHeight,
                    "Quit", lambda: self._sm.popScene())
         ]
+        self.isLoaded = True
+
+    def onLoad(self) -> None:
+        return super().onLoad()
 
     def newGame(self):
         self._sm.sceneData["player"] = {
@@ -47,7 +51,7 @@ class MainMenu(Scene):
             "speed": 1,
         }
         self._sm.changeScene(
-            Naming.NamingScene(self._sm)
+            LS.LeaderSelectScene(self._sm)
         )
 
     def update(self, deltaTime: float) -> None:

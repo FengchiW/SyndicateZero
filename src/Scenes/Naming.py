@@ -8,7 +8,7 @@ from . import Introduction
 
 class NamingScene(Scene):
     def __init__(self, sm: SceneManager) -> None:
-        super().__init__(sm)
+        super().__init__(sm, "NamingScene")
         self.title:       str = "Good Morning, Commander"
         self.titleLength: int = pr.measure_text(self.title, 50)
         self.width:       int = pr.get_screen_width()
@@ -40,6 +40,8 @@ class NamingScene(Scene):
                 lambda: self.continueToGame()
             )
         ]
+
+        self.isLoaded = True
 
     def continueToGame(self):
         self._sm.sceneData["player"]["name"] = self.textbox.text

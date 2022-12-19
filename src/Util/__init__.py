@@ -6,6 +6,7 @@ from .Card import Card
 from .Tile import Tile
 from .Map import Map
 from .Shapes import Hexagon
+from .LoadingBar import LoadingBar
 
 __all__ = ["Button", "Unit", "Card", "Tile", "Textbox", "TextBubble",
-           "Map", "Hexagon"]
+           "Map", "Hexagon", "LoadingBar"]

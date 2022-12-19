@@ -387,9 +387,28 @@ Post Version 1.1.5, this project adheres to [Semantic Versioning](https://semver
 
 - Removed old Movement system
 
-
 ## [1.4.3.3] - 2022-12-07
+
 ### Changed
-  - Moved the file structure for units and cards
+
+- Moved the file structure for units and cards
+
 ### Fixed
-  - Fixed some more typing issues
+
+- Fixed some more typing issues
+
+
+## [1.5.0.4] - 2022-12-19
+### Added
+
+  - Added new tool tip place holder
+  - New tileing system
+  - Improved unit movement
+  - Loading bar
+  - Reconfigured the scene management and resource management
+### Changed
+
+  - Change the Scene structure
+### Fixed
+
+  - Fixed some bugs with loading resources
